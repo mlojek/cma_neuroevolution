@@ -1,4 +1,4 @@
-all_code = models
+all_code = data models
 
 install:
 	pip -r requirements.txt
