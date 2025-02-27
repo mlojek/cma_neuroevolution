@@ -1,0 +1,12 @@
+# static code analysis
+black
+isort
+pylint
+
+# machine learning
+torch
+scikit-learn
+cma
+
+# mlops
+wandb
