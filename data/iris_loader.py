@@ -10,17 +10,18 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import DataLoader
 
+from data_model import DatasetConfig
+
 
 def load_iris_dataset(
-    batch_size=16, test_size=0.2, seed=42
+    config: DatasetConfig, *, random_seed=42
 ) -> Tuple[DataLoader, DataLoader]:
     """
     Create Iris dataset torch dataloaders. The samples are split equally for each class.
 
     Params:
-        batch_size (int): Number of samples in batch.
-        test_size (float): The ratio of samples to put in the train split.
-        seed (int): Random seed.
+        config (DatasetConfig): Configuration for the dataset.
+        random_seed (int): Random seed, default 42.
 
     Returns:
         Tuple[DataLoader, Dataloader]: Train and test dataloaders.
@@ -39,14 +40,14 @@ def load_iris_dataset(
 
     # Split into train and test sets
     x_train, x_test, y_train, y_test = train_test_split(
-        x, y, test_size=test_size, random_state=seed, stratify=y
+        x, y, test_size=config.test_size, random_state=random_seed, stratify=y
     )
 
     # Create DataLoaders
     train_dataset = torch.utils.data.TensorDataset(x_train, y_train)
     test_dataset = torch.utils.data.TensorDataset(x_test, y_test)
 
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=config.batch_size, shuffle=False)
 
     return train_loader, test_loader

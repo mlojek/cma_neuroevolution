@@ -35,6 +35,24 @@ class CMAMethod(Enum):
     HEAD_LAST = "head_last"
 
 
+class DatasetConfig(BaseModel):
+    """
+    Configuration related to the dataset.
+    """
+
+    batch_size: int
+    test_size: float
+
+
+class LoggingConfig(BaseModel):
+    """
+    Configuration related to logging the results.
+    """
+
+    use_wandb: bool
+    log_interval: int
+
+
 class ExperimentConfig(BaseModel):
     """
     Configuration of an experiment.
@@ -43,4 +61,6 @@ class ExperimentConfig(BaseModel):
     optimization_type: OptimizationType
     optimization_method: GradientMethod | CMAMethod
     epochs: int
-    batch_size: int
+    learning_rate: float
+    dataset_config: DatasetConfig
+    logging_config: LoggingConfig
