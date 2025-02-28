@@ -5,19 +5,49 @@ Training of model with gradient descent methods.
 import torch
 from torch import nn, optim
 
-from ..data.iris_loader import load_iris_dataset
-from ..models.mlp import MLP
-from ..utils.wandb_utils import init_wandb, log_metrics
+from data.iris_loader import load_iris_dataset
+from models.mlp import MLP
+from utils.wandb_utils import init_wandb, log_metrics
 
 
-def train_adam(epochs=50, lr=0.01, batch_size=16, log_interval=5, use_wandb=True):
+def train_gradient(
+    optimizer_name: str,
+    epochs=50,
+    learning_rate=0.01,
+    batch_size=16,
+    *,
+    log_interval=5,
+    use_wandb=False,
+) -> nn.Module:
+    """
+    Train MLP model using gradient methods.
+
+    Args:
+        optmizer_name (str): Name of gradient optimization method, choices: [adam, sgd].
+        epochs (int): Number of training epochs.
+        learning_rate (float): Learning rate value.
+        batch_size (int): Number of samplex per batch.
+        log_interval (int): Interval of epochs to report metrics.
+        use_wandb (bool): Wheather to log training progress to wandb.ai.
+
+    Returns:
+        nn.Module: Trained MLP model.
+    """
+    # TODO loaders passed as argments, remove batch_size
     # Load data
     train_loader, test_loader = load_iris_dataset(batch_size=batch_size)
 
     # Initialize model, loss function, and optimizer
     model = MLP()
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=lr)
+
+    match optimizer_name:
+        case "adam":
+            optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+        case "sgd":
+            optimizer = optim.SGD(model.parameters(), lr=learning_rate)
+        case _:
+            raise ValueError(f"Invalid optmizer {optimizer_name}")
 
     # Initialize Weights & Biases
     if use_wandb:
@@ -46,6 +76,8 @@ def train_adam(epochs=50, lr=0.01, batch_size=16, log_interval=5, use_wandb=True
         avg_loss = total_loss / total_samples
         accuracy = correct / total_samples
 
+        # TODO evaluation on test set
+
         # Log results
         if use_wandb:
             log_metrics(epoch, avg_loss, accuracy)
@@ -56,7 +88,4 @@ def train_adam(epochs=50, lr=0.01, batch_size=16, log_interval=5, use_wandb=True
             )
 
     print("Training complete.")
-
-
-if __name__ == "__main__":
-    train_adam()
+    return model
