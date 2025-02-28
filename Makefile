@@ -1,7 +1,7 @@
-all_code = **/*.py
+all_code = **/*.py *.py
 
 install:
-	pip -r requirements.txt
+	pip install -r requirements.txt
 
 clean:
 	git clean -fdx

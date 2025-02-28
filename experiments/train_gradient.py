@@ -26,7 +26,7 @@ def train_gradient(
         optmizer_name (str): Name of gradient optimization method, choices: [adam, sgd].
         epochs (int): Number of training epochs.
         learning_rate (float): Learning rate value.
-        batch_size (int): Number of samplex per batch.
+        batch_size (int): Number of samples per batch.
         log_interval (int): Interval of epochs to report metrics.
         use_wandb (bool): Wheather to log training progress to wandb.ai.
 
