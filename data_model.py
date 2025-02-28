@@ -62,5 +62,5 @@ class ExperimentConfig(BaseModel):
     optimization_method: GradientMethod | CMAMethod
     epochs: int
     learning_rate: float
-    dataset_config: DatasetConfig
-    logging_config: LoggingConfig
+    dataset: DatasetConfig
+    logging: LoggingConfig

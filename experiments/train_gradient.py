@@ -8,53 +8,35 @@ from torch import nn, optim
 from data.iris_loader import load_iris_dataset
 from models.mlp import MLP
 from utils.wandb_utils import init_wandb, log_metrics
+from data_model import ExperimentConfig, OptimizationType, GradientMethod
 
 
 def train_gradient(
-    optimizer_name: str,
-    epochs=50,
-    learning_rate=0.01,
-    batch_size=16,
-    *,
-    log_interval=5,
-    use_wandb=False,
+    config: ExperimentConfig
 ) -> nn.Module:
-    """
-    Train MLP model using gradient methods.
-
-    Args:
-        optmizer_name (str): Name of gradient optimization method, choices: [adam, sgd].
-        epochs (int): Number of training epochs.
-        learning_rate (float): Learning rate value.
-        batch_size (int): Number of samples per batch.
-        log_interval (int): Interval of epochs to report metrics.
-        use_wandb (bool): Wheather to log training progress to wandb.ai.
-
-    Returns:
-        nn.Module: Trained MLP model.
-    """
+    assert config.optimization_type == OptimizationType.GRADIENT
     # TODO loaders passed as argments, remove batch_size
     # Load data
-    train_loader, test_loader = load_iris_dataset(batch_size=batch_size)
+    train_loader, test_loader = load_iris_dataset(config.dataset)
 
     # Initialize model, loss function, and optimizer
     model = MLP()
     criterion = nn.CrossEntropyLoss()
 
-    match optimizer_name:
-        case "adam":
-            optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-        case "sgd":
-            optimizer = optim.SGD(model.parameters(), lr=learning_rate)
+    match config.optimization_method:
+        case GradientMethod.ADAM:
+            optimizer = optim.Adam(model.parameters(), lr=config.learning_rate)
+        case GradientMethod.SGD:
+            optimizer = optim.SGD(model.parameters(), lr=config.learning_rate)
         case _:
-            raise ValueError(f"Invalid optmizer {optimizer_name}")
+            raise ValueError(f"Invalid optmizer {config.optimization_method}")
 
     # Initialize Weights & Biases
-    if use_wandb:
+    if config.logging.use_wandb:
         init_wandb(run_name="adam-run", optimizer_name="Adam")
 
     # Training loop
-    for epoch in range(1, epochs + 1):
+    for epoch in range(1, config.epochs + 1):
         model.train()
         total_loss = 0
         correct = 0
@@ -79,12 +61,12 @@ def train_gradient(
         # TODO evaluation on test set
 
         # Log results
-        if use_wandb:
+        if config.logging.use_wandb:
             log_metrics(epoch, avg_loss, accuracy)
 
-        if epoch % log_interval == 0 or epoch == epochs:
+        if epoch % config.logging.log_interval == 0 or epoch == config.epochs:
             print(
-                f"Epoch {epoch}/{epochs} - Loss: {avg_loss:.4f}, Accuracy: {accuracy:.4f}"
+                f"Epoch {epoch}/{config.epochs} - Loss: {avg_loss:.4f}, Accuracy: {accuracy:.4f}"
             )
 
     print("Training complete.")
