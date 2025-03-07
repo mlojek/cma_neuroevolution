@@ -2,12 +2,16 @@
 Training of model with gradient descent methods.
 """
 
+# pylint: disable=too-many-arguments, too-many-locals
+
+from logging import Logger
+
 import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 
 from models.mlp_classifier import MLPClassifier
-from utils.wandb_utils import init_wandb, log_metrics
+from utils.wandb_utils import init_wandb, log_training_metrics
 
 
 def train_gradient(
@@ -20,6 +24,7 @@ def train_gradient(
     batch_size: int = 16,
     use_wandb: bool = False,
     optimizer: str = "adam",
+    logger: Logger = None,
 ) -> MLPClassifier:
     """
     Train the MLP classifier using a gradient optimization method.
@@ -35,6 +40,7 @@ def train_gradient(
             to wandb.ai, defualt False.
         optimizer (str): Name of gradient optimizer to use. Available options
             are sgd, adam. Default is Adam.
+        logger (Logger): Logger to log training and validation metrics.
 
     Returns:
         MLPClassifier: Trained classifier model.
@@ -52,8 +58,8 @@ def train_gradient(
 
     loss_function = nn.CrossEntropyLoss()
 
-    # if use_wandb:
-    #     init_wandb(run_name="adam-run", optimizer_name="Adam")
+    if use_wandb:
+        init_wandb(optimizer, {})
 
     for epoch in range(epochs):
         # Training step
@@ -101,21 +107,16 @@ def train_gradient(
         val_avg_loss = val_loss / val_num_samples
         val_accuracy = val_correct_samples / val_num_samples
 
-        # TODO Log using logger
-        print(
-            f"Epoch {epoch+1}/{epochs} - "
-            f"Train Loss: {train_avg_loss:.4f}, Train Accuracy: {train_accuracy:.4f}, "
-            f"Val Loss: {val_avg_loss:.4f}, Val Accuracy: {val_accuracy:.4f}"
-        )
+        if logger:
+            logger.info(
+                f"Epoch {epoch+1}/{epochs}: "
+                f"train loss: {train_avg_loss:.4f}, train accuracy: {train_accuracy:.4f}, "
+                f"val loss: {val_avg_loss:.4f}, val accuracy: {val_accuracy:.4f}"
+            )
 
-        # TODO handle wandb logging
-        # if use_wandb:
-        #     wandb.log({
-        #         'epoch': epoch + 1,
-        #         'train_loss': train_avg_loss,
-        #         'train_accuracy': train_accuracy,
-        #         'val_loss': val_avg_loss,
-        #         'val_accuracy': val_accuracy
-        #     })
+        if use_wandb:
+            log_training_metrics(
+                epoch + 1, train_avg_loss, train_accuracy, val_avg_loss, val_accuracy
+            )
 
     return model
