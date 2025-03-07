@@ -6,7 +6,7 @@ import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 
-from models.mlp import MLPClassifier
+from models.mlp_classifier import MLPClassifier
 from utils.wandb_utils import init_wandb, log_metrics
 
 

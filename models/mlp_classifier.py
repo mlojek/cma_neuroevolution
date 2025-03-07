@@ -3,6 +3,7 @@ Simple multi-layer perceptron classifier model.
 Default layer dimensionality matches the Iris dataset.
 """
 
+import torch
 from torch import Tensor, nn
 
 
@@ -40,3 +41,32 @@ class MLPClassifier(nn.Module):
         x = self.relu(x)
         x = self.linear2(x)
         return self.softmax(x)
+
+    def params_to_tensor(self) -> Tensor:
+        """
+        Concatenate all learnable parameters into one dimensional tensor.
+
+        Returns:
+            Tensor: 1D tensor of all learnable parameters of the model.
+        """
+        return (
+            torch.cat([param.data.view(-1) for param in self.parameters()])
+            .detach()
+            .numpy()
+        )
+
+    def set_params(self, param_vector: Tensor) -> None:
+        """
+        Set all learnable parameters to values from a given param vector.
+
+        Args:
+            param_vector (Tensor): 1D tensor of parameters to set model parameters to.
+        """
+        offset = 0
+
+        for param in self.parameters():
+            num_params = param.numel()
+            param.data = torch.tensor(
+                param_vector[offset : offset + num_params]
+            ).view_as(param)
+            offset += num_params
