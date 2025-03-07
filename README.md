@@ -25,3 +25,10 @@ make install
 # OR
 pip install -r requirements.txt
 ```
+
+## Weights and biases integration
+This project uses wandb.ai for experiment tracking. During model training, the train and val average loss and accuracy are logged to the service. To enable wandb.ai in this project, run:
+```bash
+export WANDB_API_KEY=<your_api_key>
+wandb login
+```
