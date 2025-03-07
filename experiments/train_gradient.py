@@ -100,7 +100,8 @@ def train_gradient(
                 val_loss += loss_function(y_predicted, y_val).item() * x_val.size(0)
 
                 predicted_labels = torch.max(y_predicted, 1)[1]
-                val_correct_samples += (y_predicted == y_val).sum().item()
+
+                val_correct_samples += (predicted_labels == y_val).sum().item()
                 val_num_samples += y_val.size(0)
 
         # Validation loss and accuracy

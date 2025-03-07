@@ -96,6 +96,7 @@ def train_cmaes(
                 train_loss += train_loss.item() * x_batch.size(0)
 
                 predicted_labels = torch.max(y_predicted, 1)[1]
+
                 train_correct_samples += (predicted_labels == y_batch).sum().item()
                 train_num_samples += y_batch.size(0)  # ==== experiemental end ====
 
