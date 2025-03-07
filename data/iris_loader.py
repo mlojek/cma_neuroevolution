@@ -8,23 +8,23 @@ import torch
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from torch.utils.data import DataLoader
+from torch.utils.data import TensorDataset
 
 from data_model import DatasetConfig
 
 
 def load_iris_dataset(
-    config: DatasetConfig, *, random_seed=42
-) -> Tuple[DataLoader, DataLoader]:
+    train_val_test_ratio: Tuple[float, float, float], *, random_seed=42
+) -> Tuple[TensorDataset, TensorDataset, TensorDataset]:
     """
-    Create Iris dataset torch dataloaders. The samples are split equally for each class.
+    Create Iris dataset torch datasets. The samples are split equally for each class.
 
     Params:
-        config (DatasetConfig): Configuration for the dataset.
+        train_val_test_ratio (Tuple[float, float, float]): TODO
         random_seed (int): Random seed, default 42.
 
     Returns:
-        Tuple[DataLoader, Dataloader]: Train and test dataloaders.
+        Tuple[TensorDataset, TensorDataset, TensorDataset]: Train, val and test datasets.
     """
     # Load the Iris dataset
     iris = datasets.load_iris()
@@ -35,19 +35,25 @@ def load_iris_dataset(
     x = scaler.fit_transform(x)
 
     # Convert to PyTorch tensors
-    x = torch.tensor(x, dtype=torch.float32)
-    y = torch.tensor(y, dtype=torch.long)
+    x_all = torch.tensor(x, dtype=torch.float32)
+    y_all = torch.tensor(y, dtype=torch.long)
 
     # Split into train and test sets
-    x_train, x_test, y_train, y_test = train_test_split(
-        x, y, test_size=config.test_size, random_state=random_seed, stratify=y
+    x_trainval, x_test, y_trainval, y_test = train_test_split(
+        x_all, y_all, test_size=config.test_size, random_state=random_seed, stratify=y
+    )
+
+    x_train, x_val, y_train, y_val = train_test_split(
+        x_trainval,
+        y_trainval,
+        test_size=config.test_size,
+        random_state=random_seed,
+        stratify=y,
     )
 
     # Create DataLoaders
-    train_dataset = torch.utils.data.TensorDataset(x_train, y_train)
-    test_dataset = torch.utils.data.TensorDataset(x_test, y_test)
+    train_dataset = TensorDataset(x_train, y_train)
+    val_dataset = TensorDataset(x_val, y_val)
+    test_dataset = TensorDataset(x_test, y_test)
 
-    train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=config.batch_size, shuffle=False)
-
-    return train_loader, test_loader
+    return train_dataset, val_dataset, test_dataset
