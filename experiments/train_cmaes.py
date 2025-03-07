@@ -83,12 +83,12 @@ def train_cmaes(
             for x_batch, y_batch in train_loader:
                 solutions = es.ask()
                 losses = [
-                    evaluate(model, train_loader, loss_function, params)
+                    evaluate(model, train_loader, loss_function, torch.Tensor(params))
                     for params in solutions
                 ]
                 es.tell(solutions, losses)
                 best_params = es.best.x
-                model.set_params(best_params)
+                model.set_params(torch.Tensor(best_params))
 
                 y_predicted = model(x_batch)
                 train_loss = loss_function(y_predicted, y_batch)
@@ -115,7 +115,7 @@ def train_cmaes(
                 val_loss += loss_function(y_predicted, y_val).item() * x_val.size(0)
 
                 predicted_labels = torch.max(y_predicted, 1)[1]
-                val_correct_samples += (y_predicted == y_val).sum().item()
+                val_correct_samples += (predicted_labels == y_val).sum().item()
                 val_num_samples += y_val.size(0)
 
             # Validation loss and accuracy
