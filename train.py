@@ -65,4 +65,6 @@ if __name__ == "__main__":
     else:
         raise ValueError(f"{args.method} is not a valid training method!")
 
+    print(model.eval_counter)
+
     torch.save(model.state_dict(), f"iris.{args.method}.pth")

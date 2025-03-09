@@ -15,23 +15,6 @@ from models.mlp_classifier import MLPClassifier
 from utils.wandb_utils import init_wandb, log_training_metrics
 
 
-def evaluate(model, val_loader, loss_function, params):
-    """Evaluate model performance on the validation set."""
-    model.set_params(params)
-    val_loss = 0.0
-    val_correct_samples = 0
-    val_num_samples = 0
-
-    for x_val, y_val in val_loader:
-        y_predicted = model(x_val)
-        val_loss += loss_function(y_predicted, y_val).item() * x_val.size(0)
-        predicted_labels = torch.max(y_predicted, 1)[1]
-        val_correct_samples += (predicted_labels == y_val).sum().item()
-        val_num_samples += y_val.size(0)
-
-    return val_loss / val_num_samples
-
-
 def train_cmaes(
     model: MLPClassifier,
     train_dataset: TensorDataset,
@@ -42,6 +25,7 @@ def train_cmaes(
     batch_size: int = 16,
     use_wandb: bool = False,
     logger: Logger = None,
+    popsize: int = 10,
 ) -> MLPClassifier:
     """
     Train the MLP classifier using the CMA-ES optimization method.
@@ -56,6 +40,7 @@ def train_cmaes(
         use_wandb (bool): If true, loss and accuracy metrics will be logged
             to wandb.ai, default False.
         logger (Logger): Logger to log training and validation metrics.
+        popsize (int): Number of solutions per iteration.
 
     Returns:
         MLPClassifier: Trained classifier model.
@@ -66,7 +51,7 @@ def train_cmaes(
     loss_function = nn.CrossEntropyLoss()
 
     # setup CMA-ES optimizer
-    es = cma.CMAEvolutionStrategy(x0=model.params_to_tensor(), sigma0=sigma)
+    es = cma.CMAEvolutionStrategy(model.params_to_tensor(), sigma, {"popsize": popsize})
 
     if use_wandb:
         init_wandb("whole_model_cma_es", {})
@@ -82,10 +67,12 @@ def train_cmaes(
             # ==== experimental start ====
             for x_batch, y_batch in train_loader:
                 solutions = es.ask()
-                losses = [
-                    evaluate(model, train_loader, loss_function, torch.Tensor(params))
-                    for params in solutions
-                ]
+
+                losses = []
+                for new_params in solutions:
+                    model.set_params(new_params)
+                    losses.append(model.evaluate(train_loader, loss_function)[0])
+
                 es.tell(solutions, losses)
                 best_params = es.best.x
                 model.set_params(torch.Tensor(best_params))
@@ -105,22 +92,7 @@ def train_cmaes(
             train_accuracy = train_correct_samples / train_num_samples
 
             # Validation step
-            val_loss = 0
-            val_correct_samples = 0
-            val_num_samples = 0
-
-            for x_val, y_val in val_loader:
-                y_predicted = model(x_val)
-
-                val_loss += loss_function(y_predicted, y_val).item() * x_val.size(0)
-
-                predicted_labels = torch.max(y_predicted, 1)[1]
-                val_correct_samples += (predicted_labels == y_val).sum().item()
-                val_num_samples += y_val.size(0)
-
-            # Validation loss and accuracy
-            val_avg_loss = val_loss / val_num_samples
-            val_accuracy = val_correct_samples / val_num_samples
+            val_avg_loss, val_accuracy = model.evaluate(val_loader, loss_function)
 
             if logger:
                 logger.info(

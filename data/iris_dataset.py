@@ -9,6 +9,7 @@ from typing import Tuple
 import torch
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from torch.utils.data import TensorDataset
 
 
@@ -28,6 +29,10 @@ def load_iris_dataset(
     """
     iris = datasets.load_iris()
     x, y = iris.data, iris.target  # pylint: disable=no-member
+
+    # Standardize features
+    scaler = StandardScaler()
+    x = scaler.fit_transform(x)
 
     x_all = torch.tensor(x, dtype=torch.float32)
     y_all = torch.tensor(y, dtype=torch.long)
