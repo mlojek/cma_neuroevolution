@@ -70,7 +70,7 @@ def train_cmaes(
 
                 losses = []
                 for new_params in solutions:
-                    model.set_params(new_params)
+                    model.set_params(torch.Tensor(new_params))
                     losses.append(model.evaluate(train_loader, loss_function)[0])
 
                 es.tell(solutions, losses)
