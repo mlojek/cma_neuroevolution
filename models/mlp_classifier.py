@@ -3,7 +3,7 @@ Simple multi-layer perceptron classifier model.
 Default layer dimensionality matches the Iris dataset.
 """
 
-from typing import Tuple
+from typing import List, Tuple
 
 import torch
 from torch import Tensor, nn
@@ -50,7 +50,7 @@ class MLPClassifier(nn.Module):
         x = self.linear2(x)
         return self.softmax(x)
 
-    def params_to_tensor(self) -> Tensor:
+    def get_params(self) -> Tensor:
         """
         Concatenate all learnable parameters into one dimensional tensor.
 
@@ -62,6 +62,15 @@ class MLPClassifier(nn.Module):
             .detach()
             .numpy()
         )
+
+    def get_params_layers(self) -> List[Tensor]:
+        """
+        Get list of all learnable parameters of the model, each layer flattened to 1D.
+
+        Returns:
+            List[Tensor]: List of 1D tensors of all learnable parameters of the model by layer.
+        """
+        return [param.data.view(-1).detach().numpy() for param in self.parameters()]
 
     def set_params(self, param_vector: Tensor) -> None:
         """
@@ -78,6 +87,16 @@ class MLPClassifier(nn.Module):
                 param_vector[offset : offset + num_params]
             ).view_as(param)
             offset += num_params
+
+    def set_params_layers(self, param_vectors: List[Tensor]) -> None:
+        """
+        Set all learnable parameters to values from a given list of param vectors.
+
+        Args:
+            param_vectors (Tensor): List of 1D tensors of parameters to set model parameters to.
+        """
+        for param, vector in zip(self.parameters(), param_vectors):
+            param.data = torch.tensor(vector).view_as(param)
 
     def evaluate(
         self, loader: DataLoader, loss_function: callable

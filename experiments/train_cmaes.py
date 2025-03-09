@@ -51,7 +51,7 @@ def train_cmaes(
     loss_function = nn.CrossEntropyLoss()
 
     # setup CMA-ES optimizer
-    es = cma.CMAEvolutionStrategy(model.params_to_tensor(), sigma, {"popsize": popsize})
+    es = cma.CMAEvolutionStrategy(model.get_params(), sigma, {"popsize": popsize})
 
     if use_wandb:
         init_wandb("whole_model_cma_es", {})

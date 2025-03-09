@@ -2,6 +2,8 @@
 Loading and prepocessing of the MNIST dataset. The images are flattened into 1D vectors.
 """
 
+# pylint: disable=too-many-locals
+
 from typing import Tuple
 
 from sklearn.model_selection import train_test_split
