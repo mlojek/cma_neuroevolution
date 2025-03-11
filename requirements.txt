@@ -5,6 +5,7 @@ pylint
 
 # machine learning
 torch
+torchvision
 scikit-learn
 cma
 
