@@ -1,0 +1,7 @@
+{
+    "name": "mnist",
+    "train_val_test_ratios": [0.6, 0.2, 0.2],
+    "save_path": ".",
+    "num_features": 784,
+    "num_classes": 10
+}

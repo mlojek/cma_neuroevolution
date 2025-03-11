@@ -6,10 +6,10 @@ Loading and prepocessing of the MNIST dataset. The images are flattened into 1D 
 
 from typing import Tuple
 
+import torch
 from sklearn.model_selection import train_test_split
 from torch.utils.data import TensorDataset
 from torchvision import datasets as vision_datasets
-from torchvision import transforms
 
 
 def load_mnist_dataset(
@@ -26,15 +26,9 @@ def load_mnist_dataset(
     Returns:
         Tuple[TensorDataset, TensorDataset, TensorDataset]: Train, val and test datasets.
     """
-    transform = transforms.Compose(
-        [transforms.ToTensor(), transforms.Lambda(lambda x: x.view(-1))]
-    )
+    mnist_train = vision_datasets.MNIST(root="./data", train=True)
 
-    mnist_train = vision_datasets.MNIST(
-        root="./data", train=True, download=True, transform=transform
-    )
-
-    x, y = mnist_train.data.float(), mnist_train.targets
+    x, y = torch.flatten(mnist_train.data.float(), start_dim=1), mnist_train.targets
 
     test_ratio = train_val_test_ratio[2] / sum(train_val_test_ratio)
     x_trainval, x_test, y_trainval, y_test = train_test_split(
