@@ -70,7 +70,9 @@ def train_cmaes(
                 losses = []
                 for new_params in solutions:
                     model.set_params(torch.Tensor(new_params))
-                    losses.append(model.evaluate_batch(x_batch, y_batch, loss_function)[0])
+                    losses.append(
+                        model.evaluate_batch(x_batch, y_batch, loss_function)[0]
+                    )
 
                 es.tell(solutions, losses)
                 best_params = es.best.x

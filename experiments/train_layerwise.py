@@ -54,7 +54,10 @@ def train_cmaes_layerwise(
 
     # setup CMA-ES optimizer
     model_layer_params = model.get_params_layers()
-    optimizers = [cma.CMAEvolutionStrategy(param_vector, sigma, {'popsize': popsize}) for param_vector in model_layer_params]
+    optimizers = [
+        cma.CMAEvolutionStrategy(param_vector, sigma, {"popsize": popsize})
+        for param_vector in model_layer_params
+    ]
 
     if use_wandb:
         init_wandb("layerwise_cma_es", {})
@@ -69,38 +72,38 @@ def train_cmaes_layerwise(
 
             params_backup = model.get_params_layers()
             for x_batch, y_batch in train_loader:
-                for layer_idx
+                for layer_idx, es in enumerate(optimizers):
+                    solutions = es.ask()
+                    losses = []
 
+                    for new_params in solutions:
+                        params = model.get_params_layers()
+                        params[layer_idx] = new_params
+                        model.set_params_layers(params)
+                        losses.append(
+                            model.evaluate_batch(x_batch, y_batch, loss_function)[0]
+                        )
 
-                solutions = es.ask()
+                    es.tell(solutions, losses)
+                    model.set_params_layers(params_backup)
 
-                losses = []
-                for new_params in solutions:
-                    model.set_params(torch.Tensor(new_params))
-                    losses.append(model.evaluate_batch(x_batch, y_batch, loss_function)[0])
+                best_params = [es.best.x for es in optimizers]
+                model.set_params_layers(best_params)
 
-                es.tell(solutions, losses)
+                # TODO how to do train stats???
+                # y_predicted = model(x_batch)
+                # train_loss = loss_function(y_predicted, y_batch)
 
-            best_params = [es.best.x for ex in optimizers]
-            model.set_params(torch.Tensor(best_params))
+                # train_loss += train_loss.item() * x_batch.size(0)
 
-            y_predicted = model(x_batch)
-            train_loss = loss_function(y_predicted, y_batch)
+                # predicted_labels = torch.max(y_predicted, 1)[1]
 
-            train_loss += train_loss.item() * x_batch.size(0)
+                # train_correct_samples += (predicted_labels == y_batch).sum().item()
+                # train_num_samples += y_batch.size(0)
 
-            predicted_labels = torch.max(y_predicted, 1)[1]
-
-            train_correct_samples += (predicted_labels == y_batch).sum().item()
-            train_num_samples += y_batch.size(0)
-
-
-
-
-
-            # Compute train loss and accuracy
-            train_avg_loss = train_loss / train_num_samples
-            train_accuracy = train_correct_samples / train_num_samples
+            # # Compute train loss and accuracy
+            # train_avg_loss = train_loss / train_num_samples
+            # train_accuracy = train_correct_samples / train_num_samples
 
             # Validation step
             val_avg_loss, val_accuracy = model.evaluate(val_loader, loss_function)

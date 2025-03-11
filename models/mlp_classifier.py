@@ -96,9 +96,11 @@ class MLPClassifier(nn.Module):
             param_vectors (Tensor): List of 1D tensors of parameters to set model parameters to.
         """
         for param, vector in zip(self.parameters(), param_vectors):
-            param.data = torch.tensor(vector).view_as(param)
+            param.data = torch.Tensor(vector).view_as(param)
 
-    def evaluate_batch(self, batch_x: Tensor, batch_y: Tensor, loss_function: callable) -> Tuple[float, float]:
+    def evaluate_batch(
+        self, batch_x: Tensor, batch_y: Tensor, loss_function: callable
+    ) -> Tuple[float, float]:
         y_predicted = self(batch_x)
         loss_value = loss_function(y_predicted, batch_y).item() * batch_x.size(0)
         predicted_labels = torch.max(y_predicted, 1)[1]
