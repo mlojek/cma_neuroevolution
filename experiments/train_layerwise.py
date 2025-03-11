@@ -1,5 +1,6 @@
 """
-Training of model with CMA-ES optimization.
+Training of model with CMA-ES optimization by using a separate CMA-ES optimizer
+for each set of learnable parameters.
 """
 
 # pylint: disable=too-many-arguments, too-many-locals
@@ -15,7 +16,7 @@ from models.mlp_classifier import MLPClassifier
 from utils.wandb_utils import init_wandb, log_training_metrics
 
 
-def train_cmaes(
+def train_cmaes_layerwise(
     model: MLPClassifier,
     train_dataset: TensorDataset,
     val_dataset: TensorDataset,
@@ -28,7 +29,8 @@ def train_cmaes(
     popsize: int = 10,
 ) -> MLPClassifier:
     """
-    Train the MLP classifier using the CMA-ES optimization method.
+    Train the MLP classifier using the CMA-ES optimization method, with a separate CMA-ES
+    optimizer for each set of learnable parameters.
 
     Args:
         model (MLPClassifier): The model to train.
@@ -51,10 +53,11 @@ def train_cmaes(
     loss_function = nn.CrossEntropyLoss()
 
     # setup CMA-ES optimizer
-    es = cma.CMAEvolutionStrategy(model.get_params(), sigma, {"popsize": popsize})
+    model_layer_params = model.get_params_layers()
+    optimizers = [cma.CMAEvolutionStrategy(param_vector, sigma, {'popsize': popsize}) for param_vector in model_layer_params]
 
     if use_wandb:
-        init_wandb("whole_model_cma_es", {})
+        init_wandb("layerwise_cma_es", {})
 
     with torch.no_grad():
         model.eval()
@@ -64,7 +67,11 @@ def train_cmaes(
             train_correct_samples = 0
             train_num_samples = 0
 
+            params_backup = model.get_params_layers()
             for x_batch, y_batch in train_loader:
+                for layer_idx
+
+
                 solutions = es.ask()
 
                 losses = []
@@ -73,18 +80,23 @@ def train_cmaes(
                     losses.append(model.evaluate_batch(x_batch, y_batch, loss_function)[0])
 
                 es.tell(solutions, losses)
-                best_params = es.best.x
-                model.set_params(torch.Tensor(best_params))
 
-                y_predicted = model(x_batch)
-                train_loss = loss_function(y_predicted, y_batch)
+            best_params = [es.best.x for ex in optimizers]
+            model.set_params(torch.Tensor(best_params))
 
-                train_loss += train_loss.item() * x_batch.size(0)
+            y_predicted = model(x_batch)
+            train_loss = loss_function(y_predicted, y_batch)
 
-                predicted_labels = torch.max(y_predicted, 1)[1]
+            train_loss += train_loss.item() * x_batch.size(0)
 
-                train_correct_samples += (predicted_labels == y_batch).sum().item()
-                train_num_samples += y_batch.size(0)
+            predicted_labels = torch.max(y_predicted, 1)[1]
+
+            train_correct_samples += (predicted_labels == y_batch).sum().item()
+            train_num_samples += y_batch.size(0)
+
+
+
+
 
             # Compute train loss and accuracy
             train_avg_loss = train_loss / train_num_samples

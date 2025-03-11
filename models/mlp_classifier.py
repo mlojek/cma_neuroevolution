@@ -98,6 +98,13 @@ class MLPClassifier(nn.Module):
         for param, vector in zip(self.parameters(), param_vectors):
             param.data = torch.tensor(vector).view_as(param)
 
+    def evaluate_batch(self, batch_x: Tensor, batch_y: Tensor, loss_function: callable) -> Tuple[float, float]:
+        y_predicted = self(batch_x)
+        loss_value = loss_function(y_predicted, batch_y).item() * batch_x.size(0)
+        predicted_labels = torch.max(y_predicted, 1)[1]
+        accuracy = (predicted_labels == batch_y).sum().item() / batch_y.size(0)
+        return loss_value, accuracy
+
     def evaluate(
         self, loader: DataLoader, loss_function: callable
     ) -> Tuple[float, float]:
