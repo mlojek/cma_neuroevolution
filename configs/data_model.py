@@ -22,19 +22,10 @@ class DatasetConfig(BaseModel):
     save_path: Path
     "Directory path to save the dataset pickles."
 
+    num_features: int
+    "Number of input features."
 
-class ModelConfig(BaseModel):
-    """
-    Configuration related to the MLPClassifier model.
-    """
-
-    input_dim: int
-    "Number of input features to the model."
-
-    hidden_dim: int
-    "Number of neurons in the hidden layer."
-
-    output_dim: int
+    num_classes: int
     "Number of classes in the classification task."
 
 
@@ -42,3 +33,4 @@ class TrainingConfig(BaseModel):
     # TODO docstrings
     # TODO class members
     batch_size: int
+    num_hidden: int
