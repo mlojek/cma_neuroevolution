@@ -26,7 +26,7 @@ def load_mnist_dataset(
     Returns:
         Tuple[TensorDataset, TensorDataset, TensorDataset]: Train, val and test datasets.
     """
-    mnist_train = vision_datasets.MNIST(root="./data", train=True)
+    mnist_train = vision_datasets.MNIST(download=True, root="./data", train=True)
 
     x, y = torch.flatten(mnist_train.data.float(), start_dim=1), mnist_train.targets
 
