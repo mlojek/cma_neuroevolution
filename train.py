@@ -6,6 +6,8 @@ import argparse
 import json
 import logging
 import pickle
+import time
+import psutil
 from pathlib import Path
 
 import torch
@@ -51,6 +53,13 @@ if __name__ == "__main__":
         input_dim=dataset_config.num_features, output_dim=dataset_config.num_classes
     )
 
+    # Measure resources before training
+    process = psutil.Process()
+    cpu_before = process.cpu_percent()
+    mem_before = process.memory_info().rss
+    start_time = time.time()
+
+    # Training
     if args.method in ["adam", "sgd"]:
         model = train_gradient(
             model,
@@ -75,6 +84,15 @@ if __name__ == "__main__":
         )
     else:
         raise ValueError(f"{args.method} is not a valid training method!")
+
+    # Measure resources after training
+    cpu_after = process.cpu_percent()
+    mem_after = process.memory_info().rss
+    elapsed_time = time.time() - start_time
+
+    logger.info(f"CPU Usage: {cpu_after - cpu_before:.2f}%")
+    logger.info(f"Memory Usage: {(mem_after - mem_before) / (1024 ** 2):.2f} MB")
+    logger.info(f"Execution Time: {elapsed_time:.2f} seconds")
 
     print(model.eval_counter)
 
