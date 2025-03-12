@@ -101,10 +101,25 @@ class MLPClassifier(nn.Module):
     def evaluate_batch(
         self, batch_x: Tensor, batch_y: Tensor, loss_function: callable
     ) -> Tuple[float, float]:
+        """
+        Evaluate the model with a batch of data, that is a series of x and y tensors.
+        Return both loss and accuracy of the model.
+
+        Args:
+            batch_x (Tensor): Tensors of features.
+            batch_y (Tensor): Tensors of classes.
+            loss_function (callable): Function used to calculate model's loss value.
+
+        Returns:
+            Tuple[float, float]: Model's loss value and accuracy on the batch.
+        """
         y_predicted = self(batch_x)
-        loss_value = loss_function(y_predicted, batch_y).item() * batch_x.size(0)
+
+        loss_value = loss_function(y_predicted, batch_y).item() / batch_x.size(0)
+
         predicted_labels = torch.max(y_predicted, 1)[1]
         accuracy = (predicted_labels == batch_y).sum().item() / batch_y.size(0)
+
         return loss_value, accuracy
 
     def evaluate(
