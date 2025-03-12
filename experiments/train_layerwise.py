@@ -87,23 +87,25 @@ def train_cmaes_layerwise(
                     es.tell(solutions, losses)
                     model.set_params_layers(params_backup)
 
+                # Set each layer to the best found solution
                 best_params = [es.best.x for es in optimizers]
                 model.set_params_layers(best_params)
 
-                # TODO how to do train stats???
-                # y_predicted = model(x_batch)
-                # train_loss = loss_function(y_predicted, y_batch)
+                # Training loss and accuracy
+                y_predicted = model(x_batch)
 
-                # train_loss += train_loss.item() * x_batch.size(0)
+                train_loss += loss_function(y_predicted, y_batch).item() * x_batch.size(
+                    0
+                )
 
-                # predicted_labels = torch.max(y_predicted, 1)[1]
+                predicted_labels = torch.max(y_predicted, 1)[1]
 
-                # train_correct_samples += (predicted_labels == y_batch).sum().item()
-                # train_num_samples += y_batch.size(0)
+                train_correct_samples += (predicted_labels == y_batch).sum().item()
+                train_num_samples += y_batch.size(0)
 
-            # # Compute train loss and accuracy
-            # train_avg_loss = train_loss / train_num_samples
-            # train_accuracy = train_correct_samples / train_num_samples
+            # Compute train loss and accuracy
+            train_avg_loss = train_loss / train_num_samples
+            train_accuracy = train_correct_samples / train_num_samples
 
             # Validation step
             val_avg_loss, val_accuracy = model.evaluate(val_loader, loss_function)
