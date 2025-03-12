@@ -12,13 +12,15 @@ from pathlib import Path
 import psutil
 import torch
 
-from configs.data_model import DatasetConfig, TrainingConfig, GradientOptimizerName, GradientOptimizerConfig
+from configs.data_model import (
+    DatasetConfig,
+    GradientOptimizerConfig,
+    TrainingConfig,
+)
 from experiments.train_cmaes import train_cmaes
 from experiments.train_gradient import train_gradient
 from experiments.train_layerwise import train_cmaes_layerwise
 from models.mlp_classifier import MLPClassifier
-
-import configs
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -55,11 +57,13 @@ if __name__ == "__main__":
     ) as pickle_handle:
         test_dataset = pickle.load(pickle_handle)
 
-    with open(args.training_config, 'r', encoding='utf-8') as file_handle:
+    with open(args.training_config, "r", encoding="utf-8") as file_handle:
         training_config = TrainingConfig(**json.load(file_handle))
 
     model = MLPClassifier(
-        input_dim=dataset_config.num_features, hidden_dim=training_config.num_hidden, output_dim=dataset_config.num_classes
+        input_dim=dataset_config.num_features,
+        hidden_dim=training_config.num_hidden,
+        output_dim=dataset_config.num_classes,
     )
 
     # Measure resources before training
@@ -72,7 +76,7 @@ if __name__ == "__main__":
     print(isinstance(training_config.optimizer_config, GradientOptimizerConfig))
 
     # Training
-    if type(training_config.optimizer_config) == GradientOptimizerConfig:
+    if isinstance(training_config.optimizer_config, GradientOptimizerConfig):
         model = train_gradient(
             model,
             train_dataset,
@@ -116,4 +120,7 @@ if __name__ == "__main__":
     logger.info(f"Memory Usage: {(mem_after - mem_before) / (1024 ** 2):.2f} MB")
     logger.info(f"Execution Time: {elapsed_time:.2f} seconds")
 
-    torch.save(model.state_dict(), f"{dataset_config.name}.{args.method}.pth")
+    torch.save(
+        model.state_dict(),
+        f"{dataset_config.name}.{training_config.optimizer_config.name.value}.pth",
+    )

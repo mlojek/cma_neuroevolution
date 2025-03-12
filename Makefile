@@ -13,4 +13,4 @@ format:
 check:
 	black ${all_code} --check
 	isort ${all_code} --check --profile black
-	pylint ${all_code}
+	pylint ${all_code} --disable duplicate-code

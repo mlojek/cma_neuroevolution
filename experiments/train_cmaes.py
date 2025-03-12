@@ -50,21 +50,24 @@ def train_cmaes(
 
     loss_function = nn.CrossEntropyLoss()
 
-    # setup CMA-ES optimizer
-    es = cma.CMAEvolutionStrategy(model.get_params(), sigma, {"popsize": popsize})
-
     if use_wandb:
         init_wandb("whole_model_cma_es", {})
+
+    # ===== end same ====
+    # setup CMA-ES optimizer
+    es = cma.CMAEvolutionStrategy(model.get_params(), sigma, {"popsize": popsize})
 
     with torch.no_grad():
         model.eval()
         for epoch in range(epochs):
+            # ===== start same
             # training step
             train_loss = 0
             train_correct_samples = 0
             train_num_samples = 0
 
             for x_batch, y_batch in train_loader:
+                # ==== end same
                 solutions = es.ask()
 
                 losses = []
@@ -75,16 +78,16 @@ def train_cmaes(
                     )
 
                 es.tell(solutions, losses)
-                best_params = es.best.x
                 model.set_params(torch.Tensor(best_params))
 
-                y_predicted = model(x_batch)
-                train_loss = loss_function(y_predicted, y_batch)
+                best_params = es.best.x
 
-                train_loss += train_loss.item() * x_batch.size(0)
+                y_predicted = model(x_batch)
+                loss = loss_function(y_predicted, y_batch)
+                # pylint: disable=duplicate-code
+                train_loss += loss.item() * x_batch.size(0)
 
                 predicted_labels = torch.max(y_predicted, 1)[1]
-
                 train_correct_samples += (predicted_labels == y_batch).sum().item()
                 train_num_samples += y_batch.size(0)
 

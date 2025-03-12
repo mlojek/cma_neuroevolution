@@ -54,7 +54,7 @@ if __name__ == "__main__":
         hidden_dim=training_config.num_hidden,
         output_dim=dataset_config.num_classes,
     )
-    model = model.load_state_dict(
+    model.load_state_dict(
         torch.load(
             training_config.save_path
             / f"{dataset_config.name}.{training_config.optimizer_config.name}.pth",

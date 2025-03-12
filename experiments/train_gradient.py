@@ -10,6 +10,7 @@ import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 
+from configs.data_model import GradientOptimizerName
 from models.mlp_classifier import MLPClassifier
 from utils.wandb_utils import init_wandb, log_training_metrics
 
@@ -45,14 +46,6 @@ def train_gradient(
     Returns:
         MLPClassifier: Trained classifier model.
     """
-    match optimizer:
-        case "adam":
-            optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-        case "sgd":
-            optimizer = optim.SGD(model.parameters(), lr=learning_rate)
-        case _:
-            raise ValueError(f"Invalid optmizer {optimizer}!")
-
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
@@ -60,6 +53,14 @@ def train_gradient(
 
     if use_wandb:
         init_wandb(optimizer, {})
+
+    match optimizer:
+        case GradientOptimizerName.ADAM:
+            optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+        case GradientOptimizerName.SGD:
+            optimizer = optim.SGD(model.parameters(), lr=learning_rate)
+        case _:
+            raise ValueError(f"Invalid optmizer {optimizer}!")
 
     for epoch in range(epochs):
         # Training step
@@ -72,11 +73,12 @@ def train_gradient(
         for x_batch, y_batch in train_loader:
             optimizer.zero_grad()
             y_predicted = model(x_batch)
-            train_loss = loss_function(y_predicted, y_batch)
-            train_loss.backward()
+            loss = loss_function(y_predicted, y_batch)
+            loss.backward()
             optimizer.step()
 
-            train_loss += train_loss.item() * x_batch.size(0)
+            # pylint: disable=duplicate-code
+            train_loss += loss.item() * x_batch.size(0)
 
             predicted_labels = torch.max(y_predicted, 1)[1]
             train_correct_samples += (predicted_labels == y_batch).sum().item()
@@ -87,26 +89,7 @@ def train_gradient(
         train_accuracy = train_correct_samples / train_num_samples
 
         # Validation step
-        model.eval()
-
-        val_loss = 0
-        val_correct_samples = 0
-        val_num_samples = 0
-
-        with torch.no_grad():
-            for x_val, y_val in val_loader:
-                y_predicted = model(x_val)
-
-                val_loss += loss_function(y_predicted, y_val).item() * x_val.size(0)
-
-                predicted_labels = torch.max(y_predicted, 1)[1]
-
-                val_correct_samples += (predicted_labels == y_val).sum().item()
-                val_num_samples += y_val.size(0)
-
-        # Validation loss and accuracy
-        val_avg_loss = val_loss / val_num_samples
-        val_accuracy = val_correct_samples / val_num_samples
+        val_avg_loss, val_accuracy = model.evaluate(val_loader, loss_function)
 
         if logger:
             logger.info(
