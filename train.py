@@ -12,26 +12,23 @@ from pathlib import Path
 import psutil
 import torch
 
-from configs.data_model import DatasetConfig
+from configs.data_model import DatasetConfig, TrainingConfig, GradientOptimizerName, GradientOptimizerConfig
 from experiments.train_cmaes import train_cmaes
 from experiments.train_gradient import train_gradient
 from experiments.train_layerwise import train_cmaes_layerwise
 from models.mlp_classifier import MLPClassifier
 
+import configs
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "method",
-        choices=["adam", "sgd", "cmaes", "layerwise"],
-        help="Optimization type.",
-    )
     parser.add_argument(
         "dataset_config", type=Path, help="Path to dataset config JSON."
     )
     parser.add_argument(
-        "--use_wandb",
-        action="store_true",
-        help="If specified, loss and accuracy data will be logged to wandb.ai.",
+        "training_config",
+        type=Path,
+        help="Path to training config JSON.",
     )
     args = parser.parse_args()
 
@@ -58,8 +55,11 @@ if __name__ == "__main__":
     ) as pickle_handle:
         test_dataset = pickle.load(pickle_handle)
 
+    with open(args.training_config, 'r', encoding='utf-8') as file_handle:
+        training_config = TrainingConfig(**json.load(file_handle))
+
     model = MLPClassifier(
-        input_dim=dataset_config.num_features, output_dim=dataset_config.num_classes
+        input_dim=dataset_config.num_features, hidden_dim=training_config.num_hidden, output_dim=dataset_config.num_classes
     )
 
     # Measure resources before training
@@ -68,41 +68,44 @@ if __name__ == "__main__":
     mem_before = process.memory_info().rss
     start_time = time.time()
 
+    print(type(training_config.optimizer_config))
+    print(isinstance(training_config.optimizer_config, GradientOptimizerConfig))
+
     # Training
-    if args.method in ["adam", "sgd"]:
+    if type(training_config.optimizer_config) == GradientOptimizerConfig:
         model = train_gradient(
             model,
             train_dataset,
             val_dataset,
-            epochs=10,
-            learning_rate=0.01,
-            batch_size=16,
-            use_wandb=args.use_wandb,
-            optimizer=args.method,
+            epochs=training_config.epochs,
+            learning_rate=training_config.optimizer_config.learning_rate,
+            batch_size=training_config.batch_size,
+            use_wandb=training_config.use_wandb,
+            optimizer=training_config.optimizer_config.name,
             logger=logger,
         )
-    elif args.method == "cmaes":
+    elif training_config.optimizer_config.name == "cmaes":
         model = train_cmaes(
             model,
             train_dataset,
             val_dataset,
-            epochs=10,
-            batch_size=16,
-            use_wandb=args.use_wandb,
+            epochs=training_config.epochs,
+            batch_size=training_config.batch_size,
+            use_wandb=training_config.use_wandb,
             logger=logger,
         )
-    elif args.method == "layerwise":
+    elif training_config.optimizer_config.name == "layerwise_cmaes":
         model = train_cmaes_layerwise(
             model,
             train_dataset,
             val_dataset,
-            epochs=10,
-            batch_size=16,
-            use_wandb=args.use_wandb,
+            epochs=training_config.epochs,
+            batch_size=training_config.batch_size,
+            use_wandb=training_config.use_wandb,
             logger=logger,
         )
     else:
-        raise ValueError(f"{args.method} is not a valid training method!")
+        raise ValueError(f"Invalid valid training method!")
 
     # Measure resources after training
     cpu_after = process.cpu_percent()
@@ -113,6 +116,4 @@ if __name__ == "__main__":
     logger.info(f"Memory Usage: {(mem_after - mem_before) / (1024 ** 2):.2f} MB")
     logger.info(f"Execution Time: {elapsed_time:.2f} seconds")
 
-    print(model.eval_counter)
-
-    torch.save(model.state_dict(), f"iris.{args.method}.pth")
+    torch.save(model.state_dict(), f"{dataset_config.name}.{args.method}.pth")
