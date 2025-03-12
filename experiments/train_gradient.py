@@ -110,7 +110,7 @@ def train_gradient(
 
         if logger:
             logger.info(
-                f"Epoch {epoch+1}/{epochs}: "
+                f"Epoch {epoch+1}/{epochs}: model evaluations: {model.eval_counter} "
                 f"train loss: {train_avg_loss:.4f}, train accuracy: {train_accuracy:.4f}, "
                 f"val loss: {val_avg_loss:.4f}, val accuracy: {val_accuracy:.4f}"
             )
