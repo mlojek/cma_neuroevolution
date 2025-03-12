@@ -1,0 +1,11 @@
+{
+    "num_hidden": 10,
+    "batch_size": 16,
+    "epochs": 10,
+    "use_wandb": false,
+    "save_path": ".",
+    "optimizer_config": {
+        "name": "adam",
+        "learning_rate": 0.01
+    }
+}
