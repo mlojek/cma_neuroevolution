@@ -1,23 +1,22 @@
 # CMA-ES Neuroevolution
-Neural networks are generally trained using gradient descent methods. This method however, is not the only way to optimize a function. CMA-ES is the state-of-the-art black-box optimization which optimizes a function by randomly sampling the search space with a multivariate normal distribution.
+This project probes the possibility and feasibility of training neural networks with CMA-ES algorithm.
 
-This project explores the viablity of using CMA-ES optimizer to optimize neural networks. Such approach is known as Neuroevolution.
+Artificial neural networks play a crucial role in modern machine learning. These deep learning are mostly trained using gradient methods, e.g. SGD and ADAM. These methods however, are not the only ways of finding optimal parameter values. Neural networks can be trained using genetic algorithms. Such process is called neuroevolution. This project explores the viablity of using CMA-ES algorithm to optimize neural networks. CMA-ES is the state-of-the-art black-box optimization which optimizes a function by randomly sampling the search space with a multivariate normal distribution. 
 
 ## Experiments outline
-For simplicity's sake, the optimized neural network is a multi-layer perceptron classifier for iris dataset. A few strategies are compared:
+For simplicity's sake, the optimized neural network is a multi-layer perceptron classifier for iris and MNIST datasets. A few strategies are compared:
 - Gradient-based:
     - Adam optimizer    
     - Stochastic Gradient Descent
 - CMA-based:
     - Whole-model CMA-ES
-    - Simultaneous layerwise CMA-ES
-    - Front-to-back layerwise CMA-ES
-    - Back-to-front layerwise CMA-ES
+    - Layerwise CMA-ES
 
 To compare the results, a few metrics are used:
 - final loss and accuracy on test set
-- Training time in the number of function evaluations and seconds
-- Resource consumption (CPU)
+- Training time in seconds and the number of function evaluations (+gradient calculations).
+
+The models are trained until the loss on validation set is at it's minimum.
 
 ## Installation
 For this project, python 3.13 is recommended. To install dependencies run:
