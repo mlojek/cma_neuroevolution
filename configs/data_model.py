@@ -26,6 +26,9 @@ class DatasetConfig(BaseModel):
     num_features: int
     "Number of input features."
 
+    num_hidden: int
+    "Dimensionality of the hidden layer of the model."
+
     num_classes: int
     "Number of classes in the classification task."
 
@@ -85,9 +88,6 @@ class TrainingConfig(BaseModel):
     """
     Configuration related to the training of model.
     """
-
-    num_hidden: int
-    "Dimensionality of the hidden layer of the model."
 
     batch_size: int
     "Number of samples in one batch."

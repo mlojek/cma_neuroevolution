@@ -9,7 +9,6 @@ import pickle
 import time
 from pathlib import Path
 
-import psutil
 import torch
 
 from configs.data_model import (
@@ -62,18 +61,12 @@ if __name__ == "__main__":
 
     model = MLPClassifier(
         input_dim=dataset_config.num_features,
-        hidden_dim=training_config.num_hidden,
+        hidden_dim=dataset_config.num_hidden,
         output_dim=dataset_config.num_classes,
     )
 
-    # Measure resources before training
-    process = psutil.Process()
-    cpu_before = process.cpu_percent()
-    mem_before = process.memory_info().rss
+    # Measure time before training
     start_time = time.time()
-
-    print(type(training_config.optimizer_config))
-    print(isinstance(training_config.optimizer_config, GradientOptimizerConfig))
 
     # Training
     if isinstance(training_config.optimizer_config, GradientOptimizerConfig):
@@ -111,13 +104,9 @@ if __name__ == "__main__":
     else:
         raise ValueError(f"Invalid valid training method!")
 
-    # Measure resources after training
-    cpu_after = process.cpu_percent()
-    mem_after = process.memory_info().rss
+    # Measure time after training
     elapsed_time = time.time() - start_time
 
-    logger.info(f"CPU Usage: {cpu_after - cpu_before:.2f}%")
-    logger.info(f"Memory Usage: {(mem_after - mem_before) / (1024 ** 2):.2f} MB")
     logger.info(f"Execution Time: {elapsed_time:.2f} seconds")
 
     torch.save(
