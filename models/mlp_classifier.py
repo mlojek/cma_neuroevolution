@@ -28,7 +28,7 @@ class MLPClassifier(nn.Module):
         self.linear1 = nn.Linear(input_dim, hidden_dim)
         self.relu = nn.ReLU()
         self.linear2 = nn.Linear(hidden_dim, output_dim)
-        self.softmax = nn.Softmax()
+        self.softmax = nn.Softmax(dim=-1)
 
         # number of model evaluations
         self.eval_counter = 0
