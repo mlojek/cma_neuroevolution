@@ -49,12 +49,12 @@ if __name__ == "__main__":
 
     # Read train and val datasets
     with open(
-        dataset_config.save_path / f"{dataset_config.name}.train.pkl", "rb"
+        dataset_config.save_path / f"{dataset_config.name.value}.train.pkl", "rb"
     ) as pickle_handle:
         train_dataset = pickle.load(pickle_handle)
 
     with open(
-        dataset_config.save_path / f"{dataset_config.name}.val.pkl", "rb"
+        dataset_config.save_path / f"{dataset_config.name.value}.val.pkl", "rb"
     ) as pickle_handle:
         val_dataset = pickle.load(pickle_handle)
 
@@ -91,5 +91,5 @@ if __name__ == "__main__":
     torch.save(
         model.state_dict(),
         training_config.save_path
-        / f"{dataset_config.name}.{training_config.optimizer_config.name.value}.pth",
+        / f"{dataset_config.name.value}.{training_config.optimizer_config.name.value}.pth",
     )

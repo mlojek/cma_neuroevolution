@@ -43,6 +43,6 @@ if __name__ == "__main__":
 
         # Save dataset split to apropriate file
         with open(
-            config.save_path / f"{config.name}.{split_name}.pkl", "wb"
+            config.save_path / f"{config.name.value}.{split_name}.pkl", "wb"
         ) as pickle_handle:
             pickle.dump(split_data, pickle_handle)
