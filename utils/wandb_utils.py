@@ -19,6 +19,8 @@ def init_wandb(run_name: str, config: dict) -> None:
 
 def log_training_metrics(
     epoch: int,
+    model_evals: int,
+    grad_evals: int,
     train_loss: float,
     train_accuracy: float,
     val_loss: float,
@@ -29,6 +31,8 @@ def log_training_metrics(
 
     Args:
         epoch (int): Number of epoch.
+        model_evals (int): Number of forward passes through a model.
+        grad_evals (int): Number of gradient calculations.
         train_loss (float): Total or average loss value on training data.
         train_accuracy (float): Accuracy of the model on training data.
         val_los (float): Total or average loss value on validation data.
@@ -37,6 +41,8 @@ def log_training_metrics(
     wandb.log(
         {
             "epoch": epoch,
+            "model_evaluations": model_evals,
+            "gradient_evaluations": grad_evals,
             "train_loss": train_loss,
             "train_accuracy": train_accuracy,
             "val_loss": val_loss,

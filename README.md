@@ -34,5 +34,25 @@ wandb login
 ## Usage instructions
 
 ## Experiment results
+- run training a 10 times
+- see on which epoch the val loss minimizes or stalls
+- select that number of epochs
+- run training 5 times and select the best run 
+
+| Dataset name | Training mode      | Model evaluations | Gradient evaluations | Training time (s) | Val loss | Test loss | Test accuracy |
+|--------------|--------------------|-------------------|----------------------|-------------------|----------|-----------|---------------|
+| Iris         | SGD                |
+| Iris         | ADAM               |
+| Iris         | CMA-ES             |
+| Iris         | LAYERWISE CMA-ES   |
+| MNIST        | SGD                |
+| MNIST        | ADAM               |
+| MNIST        | CMA-ES             |
+| MNIST        | LAYERWISE CMA-ES   |
+
+
+
+
+
 
 ## References

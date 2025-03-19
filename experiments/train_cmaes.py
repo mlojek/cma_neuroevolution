@@ -88,7 +88,8 @@ def train_cmaes(
 
             if logger:
                 logger.info(
-                    f"Epoch {epoch+1}/{config.epochs}: model evaluations: {model.eval_counter} "
+                    f"Epoch {epoch+1}/{config.epochs}: "
+                    f"model evals: {model.eval_counter}, grad evals: 0, "
                     f"train loss: {train_avg_loss:.4f}, train accuracy: {train_accuracy:.4f}, "
                     f"val loss: {val_avg_loss:.4f}, val accuracy: {val_accuracy:.4f}"
                 )
@@ -96,6 +97,8 @@ def train_cmaes(
             if config.use_wandb:
                 log_training_metrics(
                     epoch + 1,
+                    model.eval_counter,
+                    0,
                     train_avg_loss,
                     train_accuracy,
                     val_avg_loss,
