@@ -73,7 +73,10 @@ class MLPClassifier(nn.Module):
         Returns:
             List[Tensor]: List of 1D tensors of all learnable parameters of the model by layer.
         """
-        return [param.data.view(-1).detach().numpy() for param in self.parameters()]
+        return [
+            torch.cat([param.data.view(-1) for param in layer.parameters()])
+            for layer in [self.linear1, self.linear2]
+        ]
 
     def set_params(self, param_vector: Tensor) -> None:
         """
@@ -98,8 +101,7 @@ class MLPClassifier(nn.Module):
         Args:
             param_vectors (Tensor): List of 1D tensors of parameters to set model parameters to.
         """
-        for param, vector in zip(self.parameters(), param_vectors):
-            param.data = torch.Tensor(vector).view_as(param)
+        self.set_params(torch.cat([torch.Tensor(vector) for vector in param_vectors]))
 
     def evaluate_batch(
         self, batch_x: Tensor, batch_y: Tensor, loss_function: callable
