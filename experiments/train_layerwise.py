@@ -43,21 +43,21 @@ def train_cmaes_layerwise(
 
     loss_function = nn.CrossEntropyLoss()
 
-    if config.use_wandb:
-        init_wandb("layerwise_cma_es", config)
-
-    # setup CMA-ES optimizer
+    # setup CMA-ES optimizers
     optimizers = [
         cma.CMAEvolutionStrategy(
-            param_vector, config.sigma, {"popsize": config.popsize}
+            param_vector, config.optimizer_config.sigma0, {"popsize": config.optimizer_config.population_size}
         )
         for param_vector in model.get_params_layers()
     ]
 
+    if config.use_wandb:
+        init_wandb("layerwise_cma_es", config)
+
     with torch.no_grad():
         model.eval()
         for epoch in range(config.epochs):
-            # training step
+            # Training step
             train_loss = 0
             train_correct_samples = 0
             train_num_samples = 0
@@ -86,7 +86,6 @@ def train_cmaes_layerwise(
                 # Training loss and accuracy
                 loss = loss_function(y_predicted, y_batch)
                 y_predicted = model(x_batch)
-                # pylint: disable=duplicate-code
                 train_loss += loss.item() * x_batch.size(0)
 
                 predicted_labels = torch.max(y_predicted, 1)[1]

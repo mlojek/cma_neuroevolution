@@ -38,18 +38,18 @@ def train_cmaes(
 
     loss_function = nn.CrossEntropyLoss()
 
-    if config.use_wandb:
-        init_wandb("whole_model_cma_es", config)
-
     # setup CMA-ES optimizer
     es = cma.CMAEvolutionStrategy(
-        model.get_params(), config.sigma, {"popsize": config.popsize}
+        model.get_params(), config.optimizer_config.sigma0, {"popsize": config.optimizer_config.population_size}
     )
+
+    if config.use_wandb:
+        init_wandb("whole_model_cma_es", config)
 
     with torch.no_grad():
         model.eval()
         for epoch in range(config.epochs):
-            # training step
+            # Training step
             train_loss = 0
             train_correct_samples = 0
             train_num_samples = 0
@@ -65,9 +65,9 @@ def train_cmaes(
                     )
 
                 es.tell(solutions, losses)
-                model.set_params(torch.Tensor(best_params))
 
                 best_params = es.best.x
+                model.set_params(torch.Tensor(best_params))
 
                 y_predicted = model(x_batch)
                 loss = loss_function(y_predicted, y_batch)

@@ -1,0 +1,11 @@
+{
+    "batch_size": 16,
+    "epochs": 10,
+    "use_wandb": false,
+    "save_path": ".",
+    "optimizer_config": {
+        "name": "cmaes",
+        "population_size": 10,
+        "sigma0": 1
+    }
+}
