@@ -86,8 +86,8 @@ def train_cmaes_layerwise(
                 model.set_params_layers(best_params)
 
                 # Training loss and accuracy
-                loss = loss_function(y_predicted, y_batch)
                 y_predicted = model(x_batch)
+                loss = loss_function(y_predicted, y_batch)
                 train_loss += loss.item() * x_batch.size(0)
 
                 predicted_labels = torch.max(y_predicted, 1)[1]
