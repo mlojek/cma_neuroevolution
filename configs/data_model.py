@@ -9,12 +9,24 @@ from typing import Tuple
 from pydantic import BaseModel
 
 
+class DatasetName(Enum):
+    """
+    Enumeration of dataset available in this project.
+    """
+
+    IRIS = "iris"
+    "Iris dataset."
+
+    MNIST = "mnist"
+    "MNIST dataset."
+
+
 class DatasetConfig(BaseModel):
     """
     Configuration related to the dataset used.
     """
 
-    name: str
+    name: DatasetName
     "Name of the dataset."
 
     train_val_test_ratios: Tuple[float, float, float]
