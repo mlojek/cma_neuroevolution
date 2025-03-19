@@ -12,10 +12,10 @@ from pathlib import Path
 import torch
 
 from configs.data_model import (
+    CMAOptimizerName,
     DatasetConfig,
     GradientOptimizerConfig,
     TrainingConfig,
-    CMAOptimizerName
 )
 from experiments.train_cmaes import train_cmaes
 from experiments.train_gradient import train_gradient

@@ -38,17 +38,20 @@ def train_gradient(
 
     loss_function = nn.CrossEntropyLoss()
 
-
     match config.optimizer_config.name:
         case GradientOptimizerName.ADAM:
-            optimizer = optim.Adam(model.parameters(), lr=config.optimizer_config.learning_rate)
+            optimizer = optim.Adam(
+                model.parameters(), lr=config.optimizer_config.learning_rate
+            )
         case GradientOptimizerName.SGD:
-            optimizer = optim.SGD(model.parameters(), lr=config.optimizer_config.learning_rate)
+            optimizer = optim.SGD(
+                model.parameters(), lr=config.optimizer_config.learning_rate
+            )
         case _:
             raise ValueError(f"Invalid optmizer {optimizer}!")
 
     if config.use_wandb:
-        init_wandb(f'gradient_{config.optimizer}', config)
+        init_wandb(f"gradient_{config.optimizer}", config)
 
     for epoch in range(config.epochs):
         # Training step

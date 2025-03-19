@@ -46,7 +46,9 @@ def train_cmaes_layerwise(
     # setup CMA-ES optimizers
     optimizers = [
         cma.CMAEvolutionStrategy(
-            param_vector, config.optimizer_config.sigma0, {"popsize": config.optimizer_config.population_size}
+            param_vector,
+            config.optimizer_config.sigma0,
+            {"popsize": config.optimizer_config.population_size},
         )
         for param_vector in model.get_params_layers()
     ]

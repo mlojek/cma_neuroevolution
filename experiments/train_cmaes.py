@@ -40,7 +40,9 @@ def train_cmaes(
 
     # setup CMA-ES optimizer
     es = cma.CMAEvolutionStrategy(
-        model.get_params(), config.optimizer_config.sigma0, {"popsize": config.optimizer_config.population_size}
+        model.get_params(),
+        config.optimizer_config.sigma0,
+        {"popsize": config.optimizer_config.population_size},
     )
 
     if config.use_wandb:
