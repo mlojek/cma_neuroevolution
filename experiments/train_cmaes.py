@@ -2,8 +2,6 @@
 Training of model with CMA-ES optimization.
 """
 
-# pylint: disable=too-many-arguments, too-many-locals
-
 from logging import Logger
 
 import cma
@@ -11,6 +9,7 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
+from configs.data_model import TrainingConfig
 from models.mlp_classifier import MLPClassifier
 from utils.wandb_utils import init_wandb, log_training_metrics
 
@@ -19,13 +18,8 @@ def train_cmaes(
     model: MLPClassifier,
     train_dataset: TensorDataset,
     val_dataset: TensorDataset,
-    epochs: int,
-    *,
-    sigma: float = 1,
-    batch_size: int = 16,
-    use_wandb: bool = False,
-    logger: Logger = None,
-    popsize: int = 10,
+    config: TrainingConfig,
+    logger: Logger,
 ) -> MLPClassifier:
     """
     Train the MLP classifier using the CMA-ES optimization method.
@@ -34,40 +28,33 @@ def train_cmaes(
         model (MLPClassifier): The model to train.
         train_dataset (TensorDataset): Training split of the dataset.
         val_dataset (TensorDataset): Validation split of the dataset.
-        epochs (int): Number of training epochs.
-        sigma (float): Initial standard deviation for CMA-ES.
-        batch_size (int): Number of samples per batch, default 16.
-        use_wandb (bool): If true, loss and accuracy metrics will be logged
-            to wandb.ai, default False.
+        config (TrainingConfig): Configuration of training hyperparameters.
         logger (Logger): Logger to log training and validation metrics.
-        popsize (int): Number of solutions per iteration.
-
     Returns:
         MLPClassifier: Trained classifier model.
     """
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=False)
 
     loss_function = nn.CrossEntropyLoss()
 
-    if use_wandb:
-        init_wandb("whole_model_cma_es", {})
+    if config.use_wandb:
+        init_wandb("whole_model_cma_es", config)
 
-    # ===== end same ====
     # setup CMA-ES optimizer
-    es = cma.CMAEvolutionStrategy(model.get_params(), sigma, {"popsize": popsize})
+    es = cma.CMAEvolutionStrategy(
+        model.get_params(), config.sigma, {"popsize": config.popsize}
+    )
 
     with torch.no_grad():
         model.eval()
-        for epoch in range(epochs):
-            # ===== start same
+        for epoch in range(config.epochs):
             # training step
             train_loss = 0
             train_correct_samples = 0
             train_num_samples = 0
 
             for x_batch, y_batch in train_loader:
-                # ==== end same
                 solutions = es.ask()
 
                 losses = []
@@ -84,7 +71,6 @@ def train_cmaes(
 
                 y_predicted = model(x_batch)
                 loss = loss_function(y_predicted, y_batch)
-                # pylint: disable=duplicate-code
                 train_loss += loss.item() * x_batch.size(0)
 
                 predicted_labels = torch.max(y_predicted, 1)[1]
@@ -100,12 +86,12 @@ def train_cmaes(
 
             if logger:
                 logger.info(
-                    f"Epoch {epoch+1}/{epochs}: model evaluations: {model.eval_counter} "
+                    f"Epoch {epoch+1}/{config.epochs}: model evaluations: {model.eval_counter} "
                     f"train loss: {train_avg_loss:.4f}, train accuracy: {train_accuracy:.4f}, "
                     f"val loss: {val_avg_loss:.4f}, val accuracy: {val_accuracy:.4f}"
                 )
 
-            if use_wandb:
+            if config.use_wandb:
                 log_training_metrics(
                     epoch + 1,
                     train_avg_loss,

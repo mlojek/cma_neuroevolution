@@ -1,0 +1,2 @@
+[tool.pylint]
+disable = "too-many-locals, duplicate-code, too-many-arguments, logging-fstring-interpolation"

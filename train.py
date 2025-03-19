@@ -51,11 +51,6 @@ if __name__ == "__main__":
     ) as pickle_handle:
         val_dataset = pickle.load(pickle_handle)
 
-    with open(
-        dataset_config.save_path / f"{dataset_config.name}.test.pkl", "rb"
-    ) as pickle_handle:
-        test_dataset = pickle.load(pickle_handle)
-
     with open(args.training_config, "r", encoding="utf-8") as file_handle:
         training_config = TrainingConfig(**json.load(file_handle))
 
@@ -71,38 +66,18 @@ if __name__ == "__main__":
     # Training
     if isinstance(training_config.optimizer_config, GradientOptimizerConfig):
         model = train_gradient(
-            model,
-            train_dataset,
-            val_dataset,
-            epochs=training_config.epochs,
-            learning_rate=training_config.optimizer_config.learning_rate,
-            batch_size=training_config.batch_size,
-            use_wandb=training_config.use_wandb,
-            optimizer=training_config.optimizer_config.name,
-            logger=logger,
+            model, train_dataset, val_dataset, training_config, logger
         )
     elif training_config.optimizer_config.name == "cmaes":
-        model = train_cmaes(
-            model,
-            train_dataset,
-            val_dataset,
-            epochs=training_config.epochs,
-            batch_size=training_config.batch_size,
-            use_wandb=training_config.use_wandb,
-            logger=logger,
-        )
+        model = train_cmaes(model, train_dataset, val_dataset, training_config, logger)
     elif training_config.optimizer_config.name == "layerwise_cmaes":
         model = train_cmaes_layerwise(
-            model,
-            train_dataset,
-            val_dataset,
-            epochs=training_config.epochs,
-            batch_size=training_config.batch_size,
-            use_wandb=training_config.use_wandb,
-            logger=logger,
+            model, train_dataset, val_dataset, training_config, logger
         )
     else:
-        raise ValueError(f"Invalid valid training method!")
+        raise ValueError(
+            f"Invalid training method {training_config.optimizer_config.name}"
+        )
 
     # Measure time after training
     elapsed_time = time.time() - start_time
@@ -111,5 +86,6 @@ if __name__ == "__main__":
 
     torch.save(
         model.state_dict(),
-        f"{dataset_config.name}.{training_config.optimizer_config.name.value}.pth",
+        training_config.save_path
+        / f"{dataset_config.name}.{training_config.optimizer_config.name.value}.pth",
     )
