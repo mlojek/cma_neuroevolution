@@ -101,7 +101,7 @@ def train_cmaes_layerwise(
             # Validation step
             val_avg_loss, val_accuracy = model.evaluate(val_loader, loss_function)
 
-            if logger:
+            if (epoch + 1) % config.log_interval == 0:
                 logger.info(
                     f"Epoch {epoch+1}/{config.epochs}: "
                     f"model evals: {model.eval_counter}, grad evals: 0, "

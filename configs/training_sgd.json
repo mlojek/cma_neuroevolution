@@ -1,8 +1,9 @@
 {
     "batch_size": 16,
-    "epochs": 10,
+    "epochs": 100,
     "use_wandb": false,
     "save_path": ".",
+    "log_interval": 1,
     "optimizer_config": {
         "name": "sgd",
         "learning_rate": 0.01

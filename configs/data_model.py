@@ -113,5 +113,8 @@ class TrainingConfig(BaseModel):
     save_path: Path
     "Path to save the model to."
 
+    log_interval: int
+    "Training stats logging interval in number of epochs."
+
     optimizer_config: GradientOptimizerConfig | CMAOptimizerConfig
     "Config of either gradient or CMA optimizer."
