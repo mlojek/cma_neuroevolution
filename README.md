@@ -39,12 +39,12 @@ wandb login
 - select that number of epochs
 - run training 5 times and select the best run 
 
-| Dataset name | Training mode      | Model evaluations | Gradient evaluations | Training time (s) | Val loss | Test loss | Test accuracy |
-|--------------|--------------------|-------------------|----------------------|-------------------|----------|-----------|---------------|
-| Iris         | SGD                |
-| Iris         | ADAM               |
-| Iris         | CMA-ES             |
-| Iris         | LAYERWISE CMA-ES   |
+| Dataset name | Training mode      | Epochs | Model evaluations | Gradient evaluations | Training time (s) | Val loss | Test loss | Test accuracy |
+|--------------|--------------------|--------|-------------------|----------------------|-------------------|----------|-----------|---------------|
+| Iris         | SGD                | 200    | 24000             | 1200                 | 2.33              | 0.63     | 0.6220    | 0.93          |
+| Iris         | ADAM               | 40     | 4800              | 240                  | 1.8               | 0.63     | 0.6222    | 0.93          |
+| Iris         | CMA-ES             | 5      | 14100             | 0                    | 4.17              | 0.66     | 0.7039    | 0.83          |
+| Iris         | LAYERWISE CMA-ES   | 8      | 15360             | 0                    | 1.35              | 0.62     | 0.6177    | 0.93          |    
 | MNIST        | SGD                |
 | MNIST        | ADAM               |
 | MNIST        | CMA-ES             |

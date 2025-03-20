@@ -1,7 +1,7 @@
 {
     "batch_size": 16,
-    "epochs": 10,
-    "use_wandb": false,
+    "epochs": 8,
+    "use_wandb": true,
     "save_path": ".",
     "log_interval": 1,
     "optimizer_config": {

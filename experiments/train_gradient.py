@@ -54,7 +54,7 @@ def train_gradient(
             raise ValueError(f"Invalid optmizer {optimizer}!")
 
     if config.use_wandb:
-        init_wandb(f"gradient_{config.optimizer}", config)
+        init_wandb(f"gradient_{config.optimizer_config.name.value}", config)
 
     for epoch in range(config.epochs):
         # Training step
