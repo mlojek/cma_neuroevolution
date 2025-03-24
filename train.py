@@ -17,10 +17,10 @@ from configs.data_model import (
     GradientOptimizerConfig,
     TrainingConfig,
 )
-from experiments.train_cmaes import train_cmaes
-from experiments.train_gradient import train_gradient
-from experiments.train_layerwise import train_cmaes_layerwise
 from models.mlp_classifier import MLPClassifier
+from training.train_cmaes import train_cmaes
+from training.train_gradient import train_gradient
+from training.train_layerwise import train_cmaes_layerwise
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
