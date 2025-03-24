@@ -1,22 +1,7 @@
 # CMA-ES Neuroevolution
 This project probes the possibility and feasibility of training neural networks with CMA-ES algorithm.
 
-Artificial neural networks play a crucial role in modern machine learning. These deep learning are mostly trained using gradient methods, e.g. SGD and ADAM. These methods however, are not the only ways of finding optimal parameter values. Neural networks can be trained using genetic algorithms. Such process is called neuroevolution. This project explores the viablity of using CMA-ES algorithm to optimize neural networks. CMA-ES is the state-of-the-art black-box optimization which optimizes a function by randomly sampling the search space with a multivariate normal distribution. 
-
-## Experiments outline
-For simplicity's sake, the optimized neural network is a multi-layer perceptron classifier for iris and MNIST datasets. A few strategies are compared:
-- Gradient-based:
-    - Adam optimizer    
-    - Stochastic Gradient Descent
-- CMA-based:
-    - Whole-model CMA-ES
-    - Layerwise CMA-ES
-
-To compare the results, a few metrics are used:
-- final loss and accuracy on test set
-- Training time in seconds and the number of function evaluations (+gradient calculations).
-
-The models are trained until the loss on validation set is at it's minimum.
+Artificial neural networks play a crucial role in modern machine learning. These deep learning models are mostly trained using gradient methods, e.g. SGD and ADAM. These methods however, are not the only ways of finding optimal parameter values. Neural networks can be trained using genetic algorithms - such process is called neuroevolution. This project explores the viablity of using CMA-ES algorithm to optimize simple neural networks. CMA-ES is the state-of-the-art black-box optimization which optimizes a function by randomly sampling the search space with a multivariate normal distribution. 
 
 ## Installation
 For this project, python 3.13 is recommended. To install dependencies run:
@@ -32,8 +17,30 @@ wandb login
 ```
 
 ## Usage instructions
+Before running the project, both dataset and training configs need to be selected. Example configs can be found in `configs/` directory. Then, to prepare the dataset run:
+```
+python prepare_data.py DATASET_CONFIG
+```
+To train the model, run:
+```
+python train.py DATASET_CONFIG TRAINING_CONFIG
+```
+Finally, to evaluate a trained model:
+```
+python evaluate.py DATASET_CONFIG TRAINING_CONFIG
+```
+All config fields are described in `configs/data_model.py` script.
 
-## Experiment results
+## Experiments
+To compare the gradient optimizers with CMA-ES, the following experiment setup will be used:
+- Datasets: Iris, MNIST.
+- Gradient optimizers: SGD, Adam.
+- CMA-ES strategies: one optimizer for all model parameters, one optimizer per model layer.
+- Performance metrics: crossentropy loss, accuracy on test set.
+- Efficiency metrics: training time in seconds, model evaluations, gradient calculations.
+
+
+## Results
 - run training a 10 times
 - see on which epoch the val loss minimizes or stalls
 - select that number of epochs
