@@ -26,7 +26,7 @@ class MLPClassifier(nn.Module):
         """
         super().__init__()
         self.linear1 = nn.Linear(input_dim, hidden_dim)
-        self.relu = nn.ReLU()
+        self.activation = nn.Sigmoid()
         self.linear2 = nn.Linear(hidden_dim, output_dim)
         self.softmax = nn.Softmax()
 
@@ -49,7 +49,7 @@ class MLPClassifier(nn.Module):
         self.eval_counter += x.shape[0]
 
         x = self.linear1(x)
-        x = self.relu(x)
+        x = self.activation(x)
         x = self.linear2(x)
         return self.softmax(x)
 
