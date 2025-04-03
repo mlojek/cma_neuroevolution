@@ -109,5 +109,5 @@ if __name__ == "__main__":
         stats['test_loss'].append(test_loss)
         stats['test_acc'].append(test_acc)
 
-    # TODO interpolate stats
-    # TODO save to relevantly named JSON file
+    with open('results.json', 'w') as file_handle:
+        json.dump(stats, file_handle, indent=4)
