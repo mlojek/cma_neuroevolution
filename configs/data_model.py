@@ -101,6 +101,12 @@ class ExperimentConfig(BaseModel):
     epochs: int
     "Number of training epochs."
 
+    early_stopping_patience: int
+    "Number of epochs with no improvement in loss value before training is stopped early."
+
+    early_stopping_delta: float
+    "Minimum difference in loss value before training is stopped early."
+
     use_wandb: bool
     "If true, training stats will be logged to wandb.ai."
 

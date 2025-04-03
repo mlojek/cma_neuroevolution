@@ -7,6 +7,8 @@
     "num_classes": 3,
     "batch_size": 16,
     "epochs": 200,
+    "early_stopping_patience": 3,
+    "early_stopping_delta": 0.01,
     "use_wandb": true,
     "model_save_path": ".",
     "log_interval": 5,
