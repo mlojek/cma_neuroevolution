@@ -38,9 +38,6 @@ def train_gradient(
 
     loss_function = nn.CrossEntropyLoss()
 
-    # Number of gradient calculations
-    gradient_counter = 0
-
     match config.optimizer_config.name:
         case GradientOptimizerName.ADAM:
             optimizer = optim.Adam(
@@ -68,7 +65,7 @@ def train_gradient(
             optimizer.zero_grad()
             y_predicted = model(x_batch)
             loss = loss_function(y_predicted, y_batch)
-            gradient_counter += 1
+            model.grad_counter += 1
             loss.backward()
             optimizer.step()
 
@@ -88,7 +85,7 @@ def train_gradient(
         if (epoch + 1) % config.log_interval == 0:
             logger.info(
                 f"Epoch {epoch+1}/{config.epochs}: "
-                f"model evals: {model.eval_counter}, grad evals: {gradient_counter}, "
+                f"model evals: {model.eval_counter}, grad evals: {model.grad_counter}, "
                 f"train loss: {train_avg_loss:.4f}, train accuracy: {train_accuracy:.4f}, "
                 f"val loss: {val_avg_loss:.4f}, val accuracy: {val_accuracy:.4f}"
             )
@@ -97,7 +94,7 @@ def train_gradient(
             log_training_metrics(
                 epoch + 1,
                 model.eval_counter,
-                gradient_counter,
+                model.grad_counter,
                 train_avg_loss,
                 train_accuracy,
                 val_avg_loss,
