@@ -21,30 +21,6 @@ class DatasetName(Enum):
     "MNIST dataset."
 
 
-class DatasetConfig(BaseModel):
-    """
-    Configuration related to the dataset used.
-    """
-
-    name: DatasetName
-    "Name of the dataset."
-
-    train_val_test_ratios: Tuple[float, float, float]
-    "Proportions of the number of training, validation and testing splits."
-
-    save_path: Path
-    "Directory path to save the dataset pickles."
-
-    num_features: int
-    "Number of input features."
-
-    num_hidden: int
-    "Dimensionality of the hidden layer of the model."
-
-    num_classes: int
-    "Number of classes in the classification task."
-
-
 class GradientOptimizerName(Enum):
     """
     Enumeration of gradient-based optimizer methods.
@@ -96,10 +72,28 @@ class CMAOptimizerConfig(BaseModel):
     "Starting value for sigma parameter."
 
 
-class TrainingConfig(BaseModel):
+class ExperimentConfig(BaseModel):
     """
-    Configuration related to the training of model.
+    Configuration of the experiment.
     """
+
+    dataset_name: DatasetName
+    "Name of the dataset."
+
+    train_val_test_ratios: Tuple[float, float, float]
+    "Proportions of the number of training, validation and testing splits."
+
+    dataset_save_path: Path
+    "Directory path to save the dataset pickles."
+
+    num_features: int
+    "Number of input features."
+
+    num_hidden: int
+    "Dimensionality of the hidden layer of the model."
+
+    num_classes: int
+    "Number of classes in the classification task."
 
     batch_size: int
     "Number of samples in one batch."
@@ -110,7 +104,7 @@ class TrainingConfig(BaseModel):
     use_wandb: bool
     "If true, training stats will be logged to wandb.ai."
 
-    save_path: Path
+    model_save_path: Path
     "Path to save the model to."
 
     log_interval: int

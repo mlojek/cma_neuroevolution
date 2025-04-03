@@ -1,0 +1,18 @@
+{
+    "dataset_name": "iris",
+    "train_val_test_ratios": [0.6, 0.2, 0.2],
+    "dataset_save_path": ".",
+    "num_features": 4,
+    "num_hidden": 10,
+    "num_classes": 3,
+    "batch_size": 16,
+    "epochs": 5,
+    "use_wandb": true,
+    "model_save_path": ".",
+    "log_interval": 1,
+    "optimizer_config": {
+        "name": "cmaes",
+        "population_size": 30,
+        "sigma0": 1
+    }
+}

@@ -1,8 +1,0 @@
-{
-    "name": "iris",
-    "train_val_test_ratios": [0.6, 0.2, 0.2],
-    "save_path": ".",
-    "num_features": 4,
-    "num_hidden": 10,
-    "num_classes": 3
-}

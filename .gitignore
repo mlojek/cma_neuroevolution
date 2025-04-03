@@ -1,6 +1,7 @@
-# Pickles and pretrained models
+# Project-specific
 *.pkl
 *.pth
+data/MNIST
 
 # wandb.ai log directory
 wandb/

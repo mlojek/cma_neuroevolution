@@ -8,7 +8,7 @@ import json
 import pickle
 from pathlib import Path
 
-from configs.data_model import DatasetConfig, DatasetName
+from configs.data_model import DatasetName, ExperimentConfig
 from data.iris_dataset import load_iris_dataset
 from data.mnist_dataset import load_mnist_dataset
 
@@ -17,23 +17,21 @@ if __name__ == "__main__":
         prog="python prepare_data.py",
         description="Script to prepare dataset pickle files.",
     )
-    parser.add_argument(
-        "config", type=Path, help="Path to JSON file with dataset config."
-    )
+    parser.add_argument("config", type=Path, help="Path to JSON config file.")
     args = parser.parse_args()
 
     # Read dataset configuration
     with open(args.config, "r", encoding="utf-8") as file_handle:
-        config = DatasetConfig(**json.load(file_handle))
+        config = ExperimentConfig(**json.load(file_handle))
 
     # Depending on dataset name read the dataset split into train, val and test splits.
-    match config.name:
+    match config.dataset_name:
         case DatasetName.IRIS:
             dataset_splits = load_iris_dataset(config.train_val_test_ratios)
         case DatasetName.MNIST:
             dataset_splits = load_mnist_dataset(config.train_val_test_ratios)
         case _:
-            raise ValueError(f"Invalid dataset name {config.name}!")
+            raise ValueError(f"Invalid dataset name {config.dataset_name.name}!")
 
     for split_name, split_data in zip(["train", "val", "test"], dataset_splits):
         # Check if the data is the right shapes.
@@ -43,6 +41,7 @@ if __name__ == "__main__":
 
         # Save dataset split to apropriate file
         with open(
-            config.save_path / f"{config.name.value}.{split_name}.pkl", "wb"
+            config.dataset_save_path / f"{config.dataset_name.value}.{split_name}.pkl",
+            "wb",
         ) as pickle_handle:
             pickle.dump(split_data, pickle_handle)
