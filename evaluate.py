@@ -12,19 +12,12 @@ import torch
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 
-from configs.data_model import DatasetConfig, TrainingConfig
+from configs.data_model import ExperimentConfig
 from models.mlp_classifier import MLPClassifier
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "dataset_config", type=Path, help="Path to the dataset configuration JSON file."
-    )
-    parser.add_argument(
-        "training_config",
-        type=Path,
-        help="Path to the training configuration JSON file.",
-    )
+    parser.add_argument("config", type=Path, help="Path to JSON config file.")
     args = parser.parse_args()
 
     # Create a logger
@@ -34,29 +27,26 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
 
     # Read config files
-    with open(args.dataset_config, "r", encoding="utf-8") as file_handle:
-        dataset_config = DatasetConfig(**json.load(file_handle))
-
-    with open(args.training_config, "r", encoding="utf-8") as file_handle:
-        training_config = TrainingConfig(**json.load(file_handle))
+    with open(args.config, "r", encoding="utf-8") as file_handle:
+        config = ExperimentConfig(**json.load(file_handle))
 
     # Read test dataset
     with open(
-        dataset_config.save_path / f"{dataset_config.name.value}.test.pkl", "rb"
+        config.dataset_save_path / f"{config.dataset_name.value}.test.pkl", "rb"
     ) as file_handle:
         test_dataset = pickle.load(file_handle)
         test_loader = DataLoader(test_dataset, batch_size=len(test_dataset))
 
     # Read model and model state
     model = MLPClassifier(
-        input_dim=dataset_config.num_features,
-        hidden_dim=dataset_config.num_hidden,
-        output_dim=dataset_config.num_classes,
+        input_dim=config.num_features,
+        hidden_dim=config.num_hidden,
+        output_dim=config.num_classes,
     )
     model.load_state_dict(
         torch.load(
-            training_config.save_path
-            / f"{dataset_config.name.value}.{training_config.optimizer_config.name.value}.pth",
+            config.model_save_path
+            / f"{config.name.value}.{config.optimizer_config.name.value}.pth",
             weights_only=True,
         )
     )

@@ -8,7 +8,7 @@ import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 
-from configs.data_model import GradientOptimizerName, TrainingConfig
+from configs.data_model import ExperimentConfig, GradientOptimizerName
 from models.mlp_classifier import MLPClassifier
 from utils.wandb_utils import init_wandb, log_training_metrics
 
@@ -17,7 +17,7 @@ def train_gradient(
     model: MLPClassifier,
     train_dataset: TensorDataset,
     val_dataset: TensorDataset,
-    config: TrainingConfig,
+    config: ExperimentConfig,
     logger: Logger,
 ) -> MLPClassifier:
     """

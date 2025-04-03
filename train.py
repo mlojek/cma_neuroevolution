@@ -13,9 +13,8 @@ import torch
 
 from configs.data_model import (
     CMAOptimizerName,
-    DatasetConfig,
+    ExperimentConfig,
     GradientOptimizerConfig,
-    TrainingConfig,
 )
 from models.mlp_classifier import MLPClassifier
 from training.train_cmaes import train_cmaes
@@ -24,14 +23,7 @@ from training.train_layerwise import train_cmaes_layerwise
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "dataset_config", type=Path, help="Path to dataset config JSON."
-    )
-    parser.add_argument(
-        "training_config",
-        type=Path,
-        help="Path to training config JSON.",
-    )
+    parser.add_argument("config", type=Path, help="Path to JSON config file.")
     args = parser.parse_args()
 
     # Setup logger
@@ -40,48 +32,39 @@ if __name__ == "__main__":
     )
     logger = logging.getLogger(__name__)
 
-    # Read configs
-    with open(args.dataset_config, "r", encoding="utf-8") as file_handle:
-        dataset_config = DatasetConfig(**json.load(file_handle))
-
-    with open(args.training_config, "r", encoding="utf-8") as file_handle:
-        training_config = TrainingConfig(**json.load(file_handle))
+    # Read config
+    with open(args.config, "r", encoding="utf-8") as file_handle:
+        config = ExperimentConfig(**json.load(file_handle))
 
     # Read train and val datasets
     with open(
-        dataset_config.save_path / f"{dataset_config.name.value}.train.pkl", "rb"
+        config.dataset_save_path / f"{config.dataset_name.value}.train.pkl", "rb"
     ) as pickle_handle:
         train_dataset = pickle.load(pickle_handle)
 
     with open(
-        dataset_config.save_path / f"{dataset_config.name.value}.val.pkl", "rb"
+        config.dataset_save_path / f"{config.dataset_name.value}.val.pkl", "rb"
     ) as pickle_handle:
         val_dataset = pickle.load(pickle_handle)
 
     # Create an instance of classfier to train
     model = MLPClassifier(
-        input_dim=dataset_config.num_features,
-        hidden_dim=dataset_config.num_hidden,
-        output_dim=dataset_config.num_classes,
+        input_dim=config.num_features,
+        hidden_dim=config.num_hidden,
+        output_dim=config.num_classes,
     )
 
     # Train the model
     start_time = time.time()
 
-    if isinstance(training_config.optimizer_config, GradientOptimizerConfig):
-        model = train_gradient(
-            model, train_dataset, val_dataset, training_config, logger
-        )
-    elif training_config.optimizer_config.name == CMAOptimizerName.CMAES:
-        model = train_cmaes(model, train_dataset, val_dataset, training_config, logger)
-    elif training_config.optimizer_config.name == CMAOptimizerName.LAYERWISE_CMAES:
-        model = train_cmaes_layerwise(
-            model, train_dataset, val_dataset, training_config, logger
-        )
+    if isinstance(config.optimizer_config, GradientOptimizerConfig):
+        model = train_gradient(model, train_dataset, val_dataset, config, logger)
+    elif config.optimizer_config.name == CMAOptimizerName.CMAES:
+        model = train_cmaes(model, train_dataset, val_dataset, config, logger)
+    elif config.optimizer_config.name == CMAOptimizerName.LAYERWISE_CMAES:
+        model = train_cmaes_layerwise(model, train_dataset, val_dataset, config, logger)
     else:
-        raise ValueError(
-            f"Invalid training method {training_config.optimizer_config.name}"
-        )
+        raise ValueError(f"Invalid training method {config.optimizer_config.name}")
 
     elapsed_time = time.time() - start_time
 
@@ -90,6 +73,6 @@ if __name__ == "__main__":
     # Save the trained model
     torch.save(
         model.state_dict(),
-        training_config.save_path
-        / f"{dataset_config.name.value}.{training_config.optimizer_config.name.value}.pth",
+        config.model_save_path
+        / f"{config.dataset_name.value}.{config.optimizer_config.name.value}.pth",
     )

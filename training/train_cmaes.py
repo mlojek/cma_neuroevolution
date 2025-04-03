@@ -9,7 +9,7 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
-from configs.data_model import TrainingConfig
+from configs.data_model import ExperimentConfig
 from models.mlp_classifier import MLPClassifier
 from utils.wandb_utils import init_wandb, log_training_metrics
 
@@ -18,7 +18,7 @@ def train_cmaes(
     model: MLPClassifier,
     train_dataset: TensorDataset,
     val_dataset: TensorDataset,
-    config: TrainingConfig,
+    config: ExperimentConfig,
     logger: Logger,
 ) -> MLPClassifier:
     """
