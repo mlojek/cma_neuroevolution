@@ -8,6 +8,7 @@ from typing import Tuple
 
 import torch
 from sklearn.model_selection import train_test_split
+from torch.nn.functional import interpolate
 from torch.utils.data import TensorDataset
 from torchvision import datasets as vision_datasets
 
@@ -28,7 +29,10 @@ def load_mnist_dataset(
     """
     mnist_train = vision_datasets.MNIST(download=True, root="./data", train=True)
 
-    x, y = torch.flatten(mnist_train.data.float(), start_dim=1), mnist_train.targets
+    x = mnist_train.data.float().unsqueeze(1) / 255.0
+    x = interpolate(x, size=(14, 14), mode="bilinear", align_corners=False)
+    x = torch.flatten(x, start_dim=1)
+    y = mnist_train.targets
 
     test_ratio = train_val_test_ratio[2] / sum(train_val_test_ratio)
     x_trainval, x_test, y_trainval, y_test = train_test_split(
