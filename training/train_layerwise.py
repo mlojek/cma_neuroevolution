@@ -14,8 +14,8 @@ from torch.utils.data import DataLoader, TensorDataset
 
 from configs.data_model import ExperimentConfig
 from models.mlp_classifier import MLPClassifier
-from utils.wandb_utils import init_wandb, log_training_metrics
 from utils.early_stopping import EarlyStopping
+from utils.wandb_utils import init_wandb, log_training_metrics
 
 
 def train_cmaes_layerwise(
@@ -44,7 +44,9 @@ def train_cmaes_layerwise(
 
     loss_function = nn.CrossEntropyLoss()
 
-    early_stopping = EarlyStopping(config.early_stopping_patience, config.early_stopping_delta)
+    early_stopping = EarlyStopping(
+        config.early_stopping_patience, config.early_stopping_delta
+    )
 
     # setup CMA-ES optimizers
     optimizers = [
@@ -127,7 +129,9 @@ def train_cmaes_layerwise(
             early_stopping(val_avg_loss, model)
 
             if early_stopping.stop():
-                logger.info(f"Early stopping in epoch {epoch+1} due to lack of improvement.")
+                logger.info(
+                    f"Early stopping in epoch {epoch+1} due to lack of improvement."
+                )
                 model.load_state_dict(early_stopping.best_model_state)
                 break
 
