@@ -4,6 +4,7 @@ isort
 pylint
 
 # machine learning
+pandas
 torch
 torchvision
 scikit-learn
