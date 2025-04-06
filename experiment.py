@@ -8,6 +8,7 @@ import logging
 import time
 from pathlib import Path
 
+import pandas as pd
 from torch import nn
 from torch.utils.data import DataLoader
 
@@ -23,6 +24,18 @@ from models.mlp_classifier import MLPClassifier
 from training.train_cmaes import train_cmaes
 from training.train_gradient import train_gradient
 from training.train_layerwise import train_cmaes_layerwise
+
+DATAFRAME_COLUMNS = [
+    "time",
+    "train_loss",
+    "train_acc",
+    "val_loss",
+    "val_acc",
+    "test_loss",
+    "test_acc",
+    "model_evals",
+    "grad_evals",
+]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -56,17 +69,7 @@ if __name__ == "__main__":
             raise ValueError(f"Invalid dataset name {config.dataset_name.name}!")
 
     # dictionary to store statistics
-    stats = {
-        "time": [],
-        "train_loss": [],
-        "train_acc": [],
-        "val_loss": [],
-        "val_acc": [],
-        "test_loss": [],
-        "test_acc": [],
-        "model_evals": [],
-        "grad_evals": [],
-    }
+    dataframe_rows = []
 
     # choose the right training function depending on configuration
     if isinstance(config.optimizer_config, GradientOptimizerConfig):
@@ -89,25 +92,29 @@ if __name__ == "__main__":
             output_dim=config.num_classes,
         )
 
+        row = []
+
         start_time = time.time()
         model = train_function(model, train_dataset, val_dataset, config, logger)
-        stats['time'].append(time.time() - start_time)
-
-        stats['model_evals'].append(model.eval_counter)
-        stats['grad_evals'].append(model.grad_counter)
+        row = [time.time() - start_time]
 
         loss_fn = nn.CrossEntropyLoss()
 
-        train_loss, train_acc = model.evaluate(DataLoader(train_dataset), loss_fn)
-        val_loss, val_acc = model.evaluate(DataLoader(val_dataset), loss_fn)
-        test_loss, test_acc = model.evaluate(DataLoader(test_dataset), loss_fn)
+        row.extend(
+            [
+                *model.evaluate(DataLoader(train_dataset), loss_fn),
+                *model.evaluate(DataLoader(val_dataset), loss_fn),
+                *model.evaluate(DataLoader(test_dataset), loss_fn),
+                model.eval_counter,
+                model.grad_counter,
+            ]
+        )
 
-        stats['train_loss'].append(train_loss)
-        stats['train_acc'].append(train_acc)
-        stats['val_loss'].append(val_loss)
-        stats['val_acc'].append(val_acc)
-        stats['test_loss'].append(test_loss)
-        stats['test_acc'].append(test_acc)
+        dataframe_rows.append(row)
 
-    with open('results.json', 'w') as file_handle:
-        json.dump(stats, file_handle, indent=4)
+    experiment_stats = pd.DataFrame(dataframe_rows, columns=DATAFRAME_COLUMNS)
+
+    experiment_stats.to_csv(
+        config.model_save_path
+        / f"{config.dataset_name.value}.{config.optimizer_config.name.value}.csv"
+    )
