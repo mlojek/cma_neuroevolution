@@ -17,17 +17,17 @@ wandb login
 ```
 
 ## Usage instructions
-Before running the project, both dataset and training configs need to be selected. Example configs can be found in `configs/` directory. Then, to prepare the dataset run:
+Before running the project a configs file needs to be created. Example configs can be found in `configs/` directory. Then, to prepare the dataset run:
 ```
 python prepare_data.py DATASET_CONFIG
 ```
 To train the model, run:
 ```
-python train.py DATASET_CONFIG TRAINING_CONFIG
+python train.py CONFIG
 ```
 Finally, to evaluate a trained model:
 ```
-python evaluate.py DATASET_CONFIG TRAINING_CONFIG
+python evaluate.py CONFIG
 ```
 All config fields are described in `configs/data_model.py` script.
 
@@ -41,25 +41,26 @@ To compare the gradient optimizers with CMA-ES, the following experiment setup w
 
 
 ## Results
-- run training a 10 times
-- see on which epoch the val loss minimizes or stalls
-- select that number of epochs
-- run training 5 times and select the best run 
+TODO description
 
-| Dataset name | Training mode      | Epochs | Model evaluations | Gradient evaluations | Training time (s) | Val loss | Test loss | Test accuracy |
-|--------------|--------------------|--------|-------------------|----------------------|-------------------|----------|-----------|---------------|
-| Iris         | SGD                | 200    | 24000             | 1200                 | 2.33              | 0.63     | 0.6220    | 0.93          |
-| Iris         | ADAM               | 40     | 4800              | 240                  | 1.8               | 0.63     | 0.6222    | 0.93          |
-| Iris         | CMA-ES             | 5      | 14100             | 0                    | 4.17              | 0.66     | 0.7039    | 0.83          |
-| Iris         | LAYERWISE CMA-ES   | 8      | 15360             | 0                    | 1.35              | 0.62     | 0.6177    | 0.93          |    
-| MNIST        | SGD                |
-| MNIST        | ADAM               |
-| MNIST        | CMA-ES             |
-| MNIST        | LAYERWISE CMA-ES   |
+### Iris dataset
+
+| Training mode      | Epochs | Model evaluations | Gradient evaluations | Training time (s) | Val loss | Test loss | Test accuracy |
+|--------------------|--------|-------------------|----------------------|-------------------|----------|-----------|---------------|
+| SGD                | 200    | 24000             | 1200                 | 2.33              | 0.63     | 0.6220    | 0.93          |
+| ADAM               | 40     | 4800              | 240                  | 1.8               | 0.63     | 0.6222    | 0.93          |
+| CMA-ES             | 5      | 14100             | 0                    | 4.17              | 0.66     | 0.7039    | 0.83          |
+| LAYERWISE CMA-ES   | 8      | 15360             | 0                    | 1.35              | 0.62     | 0.6177    | 0.93          |    
 
 
+### MNIST dataset
 
-
+| Training mode      | Epochs | Model evaluations | Gradient evaluations | Training time (s) | Val loss | Test loss | Test accuracy |
+|--------------------|--------|-------------------|----------------------|-------------------|----------|-----------|---------------|
+| SGD                | 200    | 24000             | 1200                 | 2.33              | 0.63     | 0.6220    | 0.93          |
+| ADAM               | 40     | 4800              | 240                  | 1.8               | 0.63     | 0.6222    | 0.93          |
+| CMA-ES             | 5      | 14100             | 0                    | 4.17              | 0.66     | 0.7039    | 0.83          |
+| LAYERWISE CMA-ES   | 8      | 15360             | 0                    | 1.35              | 0.62     | 0.6177    | 0.93          |    
 
 
 ## References
