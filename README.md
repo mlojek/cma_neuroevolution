@@ -5,7 +5,7 @@ Artificial neural networks play a crucial role in modern machine learning. These
 
 ## Installation
 For this project, python 3.13 is recommended. To install dependencies run:
-```
+```bash
 make install
 # OR
 pip install -r requirements.txt
@@ -17,19 +17,10 @@ wandb login
 ```
 
 ## Usage instructions
-Before running the project a configs file needs to be created. Example configs can be found in `configs/` directory. Then, to prepare the dataset run:
+Before running the project a configs file needs to be created. Example configs can be found in `configs/` directory. To run an experiment run:
+```bash
+python experiment.py path/to/config
 ```
-python prepare_data.py DATASET_CONFIG
-```
-To train the model, run:
-```
-python train.py CONFIG
-```
-Finally, to evaluate a trained model:
-```
-python evaluate.py CONFIG
-```
-All config fields are described in `configs/data_model.py` script.
 
 ## Experiments
 To compare the gradient optimizers with CMA-ES, the following experiment setup will be used:
@@ -45,22 +36,22 @@ TODO description
 
 ### Iris dataset
 
-| Training mode      | Epochs | Model evaluations | Gradient evaluations | Training time (s) | Val loss | Test loss | Test accuracy |
-|--------------------|--------|-------------------|----------------------|-------------------|----------|-----------|---------------|
-| SGD                | 200    | 24000             | 1200                 | 2.33              | 0.63     | 0.6220    | 0.93          |
-| ADAM               | 40     | 4800              | 240                  | 1.8               | 0.63     | 0.6222    | 0.93          |
-| CMA-ES             | 5      | 14100             | 0                    | 4.17              | 0.66     | 0.7039    | 0.83          |
-| LAYERWISE CMA-ES   | 8      | 15360             | 0                    | 1.35              | 0.62     | 0.6177    | 0.93          |    
+| Training mode    | Model evals | Gradient evals | Train time | Test loss | Test accuracy |
+|------------------|-------------|----------------|------------|-----------|---------------|
+| SGD              | 24000       | 1200           | 2.33s      | 0.6220    | 0.93          |
+| ADAM             | 4800        | 240            | 1.8s       | 0.6222    | 0.93          |
+| CMA-ES           | 14100       | 0              | 4.17s      | 0.7039    | 0.83          |
+| LAYERWISE CMA-ES | 15360       | 0              | 1.35s      | 0.6177    | 0.93          |    
 
 
 ### MNIST dataset
 
-| Training mode      | Epochs | Model evaluations | Gradient evaluations | Training time (s) | Val loss | Test loss | Test accuracy |
-|--------------------|--------|-------------------|----------------------|-------------------|----------|-----------|---------------|
-| SGD                | 200    | 24000             | 1200                 | 2.33              | 0.63     | 0.6220    | 0.93          |
-| ADAM               | 40     | 4800              | 240                  | 1.8               | 0.63     | 0.6222    | 0.93          |
-| CMA-ES             | 5      | 14100             | 0                    | 4.17              | 0.66     | 0.7039    | 0.83          |
-| LAYERWISE CMA-ES   | 8      | 15360             | 0                    | 1.35              | 0.62     | 0.6177    | 0.93          |    
+| Training mode    | Model evals | Gradient evals | Train time | Test loss | Test accuracy |
+|------------------|-------------|----------------|------------|-----------|---------------|
+| SGD              | 24000       | 1200           | 2.33s      | 0.6220    | 0.93          |
+| ADAM             | 4800        | 240            | 1.8s       | 0.6222    | 0.93          |
+| CMA-ES           | 14100       | 0              | 4.17s      | 0.7039    | 0.83          |
+| LAYERWISE CMA-ES | 15360       | 0              | 1.35s      | 0.6177    | 0.93          |    
 
 
 ## References
