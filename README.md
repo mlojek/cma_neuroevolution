@@ -56,10 +56,10 @@ adam best, sgd comparable, cmaes worse and less efficient
 
 | Training mode    | Model evals | Gradient evals | Train time | Test loss | Test accuracy |
 |------------------|-------------|----------------|------------|-----------|---------------|
-| SGD              | 24000       | 1200           | 2.33s      | 0.6220    | 0.93          |
-| ADAM             | 4800        | 240            | 1.8s       | 0.6222    | 0.93          |
-| CMA-ES           | 14100       | 0              | 4.17s      | 0.7039    | 0.83          |
-| LAYERWISE CMA-ES | 15360       | 0              | 1.35s      | 0.6177    | 0.93          |    
+| SGD              |        |            |       | 0.    | 0.          |
+| ADAM             |         |             |        | 0.    | 0.          |
+| CMA-ES           |        |               |       | 0.    | 0.          |
+| LAYERWISE CMA-ES |        |               |       | 0.    | 0.          |    
 
 
 ## References

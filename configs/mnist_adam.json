@@ -6,14 +6,14 @@
     "num_hidden": 32,
     "num_classes": 10,
     "batch_size": 2048,
-    "epochs": 40,
+    "epochs": 100,
     "early_stopping_patience": 3,
-    "early_stopping_delta": 0.01,
+    "early_stopping_delta": 0.001,
     "use_wandb": false,
     "model_save_path": ".",
     "log_interval": 1,
     "optimizer_config": {
         "name": "adam",
-        "learning_rate": 0.02
+        "learning_rate": 0.03
     }
 }
