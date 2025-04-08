@@ -6,15 +6,15 @@
     "num_hidden": 10,
     "num_classes": 3,
     "batch_size": 16,
-    "epochs": 5,
+    "epochs": 25,
     "early_stopping_patience": 3,
     "early_stopping_delta": 0.01,
-    "use_wandb": true,
+    "use_wandb": false,
     "model_save_path": ".",
     "log_interval": 1,
     "optimizer_config": {
         "name": "cmaes",
-        "population_size": 30,
+        "population_size": 15,
         "sigma0": 1
     }
 }

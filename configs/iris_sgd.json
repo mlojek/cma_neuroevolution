@@ -9,11 +9,11 @@
     "epochs": 200,
     "early_stopping_patience": 3,
     "early_stopping_delta": 0.01,
-    "use_wandb": true,
+    "use_wandb": false,
     "model_save_path": ".",
     "log_interval": 5,
     "optimizer_config": {
         "name": "sgd",
-        "learning_rate": 0.1
+        "learning_rate": 5
     }
 }

@@ -24,7 +24,7 @@ python experiment.py path/to/config
 
 ## Experiments
 To compare the gradient optimizers with CMA-ES, the following experiment setup will be used:
-- Datasets: Iris, MNIST.
+- Datasets: Iris, MNIST (downscaled to 14x14).
 - Gradient optimizers: SGD, Adam.
 - CMA-ES strategies: one optimizer for all model parameters, one optimizer per model layer.
 - Performance metrics: crossentropy loss, accuracy on test set.
@@ -32,17 +32,25 @@ To compare the gradient optimizers with CMA-ES, the following experiment setup w
 
 
 ## Results
+
 TODO description
+- all params except lr and popsize stay the same
+- first for every method the optimal value will be selected (based on test loss)
+- early stopping' there
+- 25 runs per experiment
 
 ### Iris dataset
 
+TODO link config
+
 | Training mode    | Model evals | Gradient evals | Train time | Test loss | Test accuracy |
 |------------------|-------------|----------------|------------|-----------|---------------|
-| SGD              | 24000       | 1200           | 2.33s      | 0.6220    | 0.93          |
-| ADAM             | 4800        | 240            | 1.8s       | 0.6222    | 0.93          |
-| CMA-ES           | 14100       | 0              | 4.17s      | 0.7039    | 0.83          |
-| LAYERWISE CMA-ES | 15360       | 0              | 1.35s      | 0.6177    | 0.93          |    
+| SGD              | 1535        | 69.3           | 0.05s      | 0.649     | 0.91          |
+| ADAM             | 1583        | 71.6           | 0.06s      | 0.615     | 0.935         |
+| CMA-ES           | 13321       | 0              | 8.54s      | 0.659     | 0.892         |
+| LAYERWISE CMA-ES | 36020       | 0              | 1.15s      | 0.706     | 0.852         |    
 
+adam best, sgd comparable, cmaes worse and less efficient
 
 ### MNIST dataset
 

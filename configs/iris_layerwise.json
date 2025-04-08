@@ -6,7 +6,7 @@
     "num_hidden": 10,
     "num_classes": 3,
     "batch_size": 1024,
-    "epochs": 8,
+    "epochs": 25,
     "early_stopping_patience": 3,
     "early_stopping_delta": 0.01,
     "use_wandb": false,
@@ -14,7 +14,7 @@
     "log_interval": 1,
     "optimizer_config": {
         "name": "layerwise_cmaes",
-        "population_size": 10,
+        "population_size": 15,
         "sigma0": 1
     }
 }
