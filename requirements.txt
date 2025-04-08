@@ -4,11 +4,12 @@ isort
 pylint
 
 # machine learning
+cma
 pandas
 torch
 torchvision
+optuna
 scikit-learn
-cma
 
 # mlops
 wandb
