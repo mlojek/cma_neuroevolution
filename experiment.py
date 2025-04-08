@@ -24,6 +24,7 @@ from models.mlp_classifier import MLPClassifier
 from training.train_cmaes import train_cmaes
 from training.train_gradient import train_gradient
 from training.train_layerwise import train_cmaes_layerwise
+from training.select_training import select_training
 
 DATAFRAME_COLUMNS = [
     "time",
@@ -72,14 +73,7 @@ if __name__ == "__main__":
     dataframe_rows = []
 
     # choose the right training function depending on configuration
-    if isinstance(config.optimizer_config, GradientOptimizerConfig):
-        train_function = train_gradient
-    elif config.optimizer_config.name == CMAOptimizerName.CMAES:
-        train_function = train_cmaes
-    elif config.optimizer_config.name == CMAOptimizerName.LAYERWISE_CMAES:
-        train_function = train_cmaes_layerwise
-    else:
-        raise ValueError(f"Invalid training method {config.optimizer_config.name}")
+    train_function = select_training(config)
 
     # Train the model
     for run_num in range(args.runs):
