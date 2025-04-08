@@ -2,15 +2,14 @@
 Function to select the right training function based on the config.
 """
 
-from training.train_cmaes import train_cmaes
-from training.train_gradient import train_gradient
-from training.train_layerwise import train_cmaes_layerwise
-
 from configs.data_model import (
     CMAOptimizerName,
     ExperimentConfig,
     GradientOptimizerConfig,
 )
+from training.train_cmaes import train_cmaes
+from training.train_gradient import train_gradient
+from training.train_layerwise import train_cmaes_layerwise
 
 
 def select_training(config: ExperimentConfig) -> callable:

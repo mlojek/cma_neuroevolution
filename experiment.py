@@ -12,18 +12,9 @@ import pandas as pd
 from torch import nn
 from torch.utils.data import DataLoader
 
-from configs.data_model import (
-    CMAOptimizerName,
-    DatasetName,
-    ExperimentConfig,
-    GradientOptimizerConfig,
-)
-from data.iris_dataset import load_iris_dataset
-from data.mnist_dataset import load_mnist_dataset
+from configs.data_model import ExperimentConfig
+from data.load_dataset import load_dataset
 from models.mlp_classifier import MLPClassifier
-from training.train_cmaes import train_cmaes
-from training.train_gradient import train_gradient
-from training.train_layerwise import train_cmaes_layerwise
 from training.select_training import select_training
 
 DATAFRAME_COLUMNS = [
@@ -56,18 +47,8 @@ if __name__ == "__main__":
     with open(args.config, "r", encoding="utf-8") as file_handle:
         config = ExperimentConfig(**json.load(file_handle))
 
-    # Read train and val datasets
-    match config.dataset_name:
-        case DatasetName.IRIS:
-            train_dataset, val_dataset, test_dataset = load_iris_dataset(
-                config.train_val_test_ratios
-            )
-        case DatasetName.MNIST:
-            train_dataset, val_dataset, test_dataset = load_mnist_dataset(
-                config.train_val_test_ratios
-            )
-        case _:
-            raise ValueError(f"Invalid dataset name {config.dataset_name.name}!")
+    # Read dataset
+    train_dataset, val_dataset, test_dataset = load_dataset(config)
 
     # dictionary to store statistics
     dataframe_rows = []
