@@ -37,12 +37,12 @@ python tune_hyperparameters.py path/to/config
 
 ## Results
 ### Iris dataset
-| Training mode                                     | Model evals | Gradient evals | Train time (s) | Test loss | Test accuracy |
-|---------------------------------------------------|-------------|----------------|----------------|-----------|---------------|
-| [SGD](configs/iris_sgd.json)                      | 1823        | 84             | 0.1959         | 0.5931    | 0.9666        |
-| [ADAM](configs/iris_adam.json)                    | 1230        | 54             | 0.1825         | 0.5915    | 0.9666        |
-| [CMA-ES](configs/iris_cmaes.json)                 | 20520       | n/a            | 9.8605         | 0.5514    | 1.0           |
-| [LAYERWISE CMA-ES](configs/iris_layerwise.json)   | 63990       | n/a            | 0.6379         | 0.5514    | 1.0           |    
+| Training mode                                    | Model evals | Gradient evals | Train time (s) | Test loss | Test accuracy |
+|--------------------------------------------------|-------------|----------------|----------------|-----------|---------------|
+| [SGD](configs/iris_sgd.json)                     | 1823        | 84             | 0.1959         | 0.5931    | 0.9666        |
+| [ADAM](configs/iris_adam.json)                   | 1230        | 54             | 0.1825         | 0.5915    | 0.9666        |
+| [CMA-ES](configs/iris_cmaes.json)                | 20520       | n/a            | 9.8605         | 0.5514    | 1.0           |
+| [LAYERWISE CMA-ES](configs/iris_layerwise.json)  | 63990       | n/a            | 0.6379         | 0.5514    | 1.0           |    
 
 
 ### MNIST dataset

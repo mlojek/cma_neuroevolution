@@ -1,7 +1,7 @@
 {
     "dataset_name": "mnist",
     "train_val_test_ratios": [0.6, 0.2, 0.2],
-    "batch_size": 2048,
+    "batch_size": 4000,
     "epochs": 100,
     "use_wandb": false,
     "log_interval": 1,
