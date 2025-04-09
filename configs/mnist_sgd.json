@@ -13,10 +13,10 @@
     },
     "early_stopping": {
         "patience": 3,
-        "delta": 0.001
+        "delta": 0.0001
     },
     "optimizer_config": {
         "name": "sgd",
-        "learning_rate": 17.63
+        "learning_rate": 17.6396
     }
 }
