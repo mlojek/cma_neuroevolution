@@ -21,8 +21,6 @@ def train_cmaes(
     val_dataset: TensorDataset,
     config: ExperimentConfig,
     logger: Logger,
-    *,
-    random_seed: int = 42,
 ) -> MLPClassifier:
     """
     Train the MLP classifier using the CMA-ES optimization method.
@@ -33,7 +31,6 @@ def train_cmaes(
         val_dataset (TensorDataset): Validation split of the dataset.
         config (TrainingConfig): Configuration of training hyperparameters.
         logger (Logger): Logger to log training and validation metrics.
-        random_seed (int): Random seed for CMA-ES.
     Returns:
         MLPClassifier: Trained classifier model.
     """
@@ -42,15 +39,16 @@ def train_cmaes(
 
     loss_function = nn.CrossEntropyLoss()
 
-    early_stopping = EarlyStopping(
-        config.early_stopping_patience, config.early_stopping_delta
-    )
+    early_stopping = EarlyStopping(**config.early_stopping.model_dump())
 
     # setup CMA-ES optimizer
     es = cma.CMAEvolutionStrategy(
         model.get_params(),
         config.optimizer_config.sigma0,
-        {"popsize": config.optimizer_config.population_size, "seed": random_seed},
+        {
+            "popsize": config.optimizer_config.population_size,
+            "seed": config.random_seed,
+        },
     )
 
     if config.use_wandb:

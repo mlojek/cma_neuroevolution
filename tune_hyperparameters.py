@@ -48,7 +48,9 @@ def tuning_objective(config: ExperimentConfig, logger: Logger, trial) -> float:
 
     train_dataset, val_dataset, test_datset = load_dataset(config)
     training_function = select_training(config)
-    model = MLPClassifier(config.num_features, config.num_hidden, config.num_classes)
+    model = MLPClassifier(
+        **config.mlp_layers.model_dump(), random_seed=config.random_seed
+    )
 
     trained_model = training_function(model, train_dataset, val_dataset, config, logger)
 

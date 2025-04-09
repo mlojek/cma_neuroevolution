@@ -62,9 +62,7 @@ if __name__ == "__main__":
 
         # Create an instance of classfier to train
         model = MLPClassifier(
-            input_dim=config.num_features,
-            hidden_dim=config.num_hidden,
-            output_dim=config.num_classes,
+            **config.mlp_layers.model_dump(), random_seed=config.random_seed
         )
 
         row = []

@@ -42,7 +42,7 @@ python tune_hyperparameters.py path/to/config
 | [SGD](configs/iris_sgd.json)                      | 1830±0      | 84±0           | 0.209±0.031    | 0.5996±0  | 0.966±0       |
 | [ADAM](configs/iris_adam.json)                    | 1470±0      | 66±0           | 0.202±0.031    | 0.6018±0  | 0.933±0       |
 | [CMA-ES](configs/iris_cmaes.json)                 | 14070       | n/a            | 14.6 1.76      | 0.572     | 0.966         |
-| [LAYERWISE CMA-ES](configs/iris_layerwise.json)   | 31170       | n/a            | 0.417 0.006    | 0.623     | 0.933         |    
+| [LAYERWISE CMA-ES](configs/iris_layerwise.json)   | 21270       | n/a            | 0.409          | 0.579     | 0.966         |    
 
 
 ### MNIST dataset

@@ -3,7 +3,6 @@ Data model of the experiment configuration
 """
 
 from enum import Enum
-from pathlib import Path
 from typing import Tuple
 
 from pydantic import BaseModel
@@ -72,6 +71,33 @@ class CMAOptimizerConfig(BaseModel):
     "Starting value for sigma parameter."
 
 
+class MLPLayers(BaseModel):
+    """
+    Configuration of MLPClassifier layer sizes.
+    """
+
+    input_dim: int
+    "Number of input features."
+
+    hidden_dim: int
+    "Dimensionality of the hidden layer of the model."
+
+    output_dim: int
+    "Number of classes in the classification task."
+
+
+class EarlyStoppingConfig(BaseModel):
+    """
+    Configuration of the early stopping.
+    """
+
+    patience: int
+    "Number of epochs with no improvement in loss value before training is stopped early."
+
+    delta: float
+    "Minimum difference in loss value before training is stopped early."
+
+
 class ExperimentConfig(BaseModel):
     """
     Configuration of the experiment.
@@ -83,38 +109,26 @@ class ExperimentConfig(BaseModel):
     train_val_test_ratios: Tuple[float, float, float]
     "Proportions of the number of training, validation and testing splits."
 
-    dataset_save_path: Path
-    "Directory path to save the dataset pickles."
-
-    num_features: int
-    "Number of input features."
-
-    num_hidden: int
-    "Dimensionality of the hidden layer of the model."
-
-    num_classes: int
-    "Number of classes in the classification task."
-
     batch_size: int
     "Number of samples in one batch."
 
     epochs: int
     "Number of training epochs."
 
-    early_stopping_patience: int
-    "Number of epochs with no improvement in loss value before training is stopped early."
-
-    early_stopping_delta: float
-    "Minimum difference in loss value before training is stopped early."
-
     use_wandb: bool
     "If true, training stats will be logged to wandb.ai."
 
-    model_save_path: Path
-    "Path to save the model to."
-
     log_interval: int
     "Training stats logging interval in number of epochs."
+
+    random_seed: int
+    "Random seed for all randomized processes."
+
+    mlp_layers: MLPLayers
+    "Configuration of MLPClassifier layer sizes."
+
+    early_stopping: EarlyStoppingConfig
+    "Configuration of the EarlyStopping component."
 
     optimizer_config: GradientOptimizerConfig | CMAOptimizerConfig
     "Config of either gradient or CMA optimizer."

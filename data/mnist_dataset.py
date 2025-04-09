@@ -14,7 +14,7 @@ from torchvision import datasets as vision_datasets
 
 
 def load_mnist_dataset(
-    train_val_test_ratio: Tuple[float, float, float], *, random_seed=42
+    train_val_test_ratio: Tuple[float, float, float], random_seed: int = 42
 ) -> Tuple[TensorDataset, TensorDataset, TensorDataset]:
     """
     Create MNIST dataset torch dataloaders. The images are flattened into 1D tensors.

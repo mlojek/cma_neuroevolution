@@ -29,8 +29,8 @@ def load_dataset(
     # Read train and val datasets
     match config.dataset_name:
         case DatasetName.IRIS:
-            return load_iris_dataset(config.train_val_test_ratios)
+            return load_iris_dataset(config.train_val_test_ratios, config.random_seed)
         case DatasetName.MNIST:
-            return load_mnist_dataset(config.train_val_test_ratios)
+            return load_mnist_dataset(config.train_val_test_ratios, config.random_seed)
         case _:
             raise ValueError(f"Invalid dataset name {config.dataset_name.name}!")

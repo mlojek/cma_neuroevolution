@@ -14,7 +14,7 @@ from torch.utils.data import TensorDataset
 
 
 def load_iris_dataset(
-    train_val_test_ratio: Tuple[float, float, float], *, random_seed=42
+    train_val_test_ratio: Tuple[float, float, float], random_seed: int = 42
 ) -> Tuple[TensorDataset, TensorDataset, TensorDataset]:
     """
     Create Iris dataset torch datasets. The samples are split equally for each class.

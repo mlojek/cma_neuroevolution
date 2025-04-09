@@ -39,9 +39,7 @@ def train_gradient(
 
     loss_function = nn.CrossEntropyLoss()
 
-    early_stopping = EarlyStopping(
-        config.early_stopping_patience, config.early_stopping_delta
-    )
+    early_stopping = EarlyStopping(**config.early_stopping.model_dump())
 
     match config.optimizer_config.name:
         case GradientOptimizerName.ADAM:
