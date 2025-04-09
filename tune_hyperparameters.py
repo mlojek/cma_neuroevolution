@@ -24,14 +24,27 @@ from training.select_training import select_training
 
 
 def tuning_objective(config: ExperimentConfig, logger: Logger, trial) -> float:
+    """
+    Optuna objective to tune optimizer hyperparameters. The objective is to minimize crossentropy
+    loss on the test split of dataset.
+
+    Args:
+        config (ExperimentConfig): Experiment configuration.
+        logger (Logger): Logger for the training function.
+        trial: Optuna trial parameter.
+
+    Returns:
+        float: Model's crossentropy loss on test set.
+    """
     if isinstance(config.optimizer_config, GradientOptimizerConfig):
-        learning_rate = trial.suggest_float("lr", 0, 10)
-        config.optimizer_config.learning_rate = learning_rate
+        config.optimizer_config.learning_rate = trial.suggest_float(
+            "learning_rate", 0, 10
+        )
     elif isinstance(config.optimizer_config, CMAOptimizerConfig):
-        population_size = trial.suggest_int("popsize", 2, 30)
-        sigma0 = trial.suggest_float("sigma", 0, 10)
-        config.optimizer_config.population_size = population_size
-        config.optimizer_config.sigma0 = sigma0
+        config.optimizer_config.population_size = trial.suggest_int(
+            "population_size", 2, 30
+        )
+        config.optimizer_config.sigma0 = trial.suggest_float("sigma", 0, 10)
 
     train_dataset, val_dataset, test_datset = load_dataset(config)
     training_function = select_training(config)
@@ -59,12 +72,11 @@ if __name__ == "__main__":
     with open(args.config, "r", encoding="utf-8") as file_handle:
         config = ExperimentConfig(**json.load(file_handle))
 
+    # Perform tuning
     study = optuna.create_study(direction="minimize")
-
     objective = partial(tuning_objective, config, logger)
     study.optimize(objective, n_trials=100)
-
-    # Get and print the best result
     best_trial = study.best_trial
-    print(f"Best values: {best_trial.params}")
-    print(f"Best objective value: {best_trial.value}")
+
+    logger.info(f"Optuna found best values: {best_trial.params}.")
+    logger.info(f"Lowest found loss value of {best_trial.value:.4f}.")
