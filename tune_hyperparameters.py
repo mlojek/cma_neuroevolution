@@ -26,7 +26,7 @@ from training.select_training import select_training
 def tuning_objective(config: ExperimentConfig, logger: Logger, trial) -> float:
     """
     Optuna objective to tune optimizer hyperparameters. The objective is to minimize crossentropy
-    loss on the test split of dataset.
+    loss on the validation split of dataset.
 
     Args:
         config (ExperimentConfig): Experiment configuration.
@@ -34,7 +34,7 @@ def tuning_objective(config: ExperimentConfig, logger: Logger, trial) -> float:
         trial: Optuna trial parameter.
 
     Returns:
-        float: Model's crossentropy loss on test set.
+        float: Model's crossentropy loss on validation set.
     """
     if isinstance(config.optimizer_config, GradientOptimizerConfig):
         config.optimizer_config.learning_rate = trial.suggest_float(
@@ -46,7 +46,7 @@ def tuning_objective(config: ExperimentConfig, logger: Logger, trial) -> float:
         )
         config.optimizer_config.sigma0 = trial.suggest_float("sigma", 0, 20)
 
-    train_dataset, val_dataset, test_datset = load_dataset(config)
+    train_dataset, val_dataset, _ = load_dataset(config)
     training_function = select_training(config)
     model = MLPClassifier(
         **config.mlp_layers.model_dump(), random_seed=config.random_seed
@@ -54,7 +54,7 @@ def tuning_objective(config: ExperimentConfig, logger: Logger, trial) -> float:
 
     trained_model = training_function(model, train_dataset, val_dataset, config, logger)
 
-    return trained_model.evaluate(DataLoader(test_datset), CrossEntropyLoss())[0]
+    return trained_model.evaluate(DataLoader(val_dataset), CrossEntropyLoss())[0]
 
 
 if __name__ == "__main__":

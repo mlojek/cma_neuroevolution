@@ -30,7 +30,7 @@ python experiment.py path/to/config [--runs NUM_RUNS]
 ```
 All experiment parameters except for optimizer parameters stay the same for each dataset to ensure comparability of the results from different optimizers. To avoid overfitting, early stopping is used to halt the training after no significant improvement in loss value is observed for 3 consecutive epochs. Mean and standard deviations of the values are then used for comparison. Wherever it's possible, random seed is set to allow reproducibility.
 
-To ensure that each optimizer works with it's full potential, hyperparameter tuning is performed using `optuna`. Optuna uses CMA-ES optimizer to find the best hyperparameters to minimize loss function value. For gradient optimizers the learning rate is tuned, while for cma optimizers population size and sigma0 parameters are tuned. Tuning is performed with `tune_hyperparameters` script, which you can run by:
+To ensure that each optimizer works with it's full potential, hyperparameter tuning is performed using `optuna`. Optuna uses CMA-ES optimizer to find the best hyperparameters to minimize loss function value on validation dataset. For gradient optimizers the learning rate is tuned, while for cma optimizers population size and sigma0 parameters are tuned. Tuning is performed with `tune_hyperparameters` script, which you can run by:
 ```bash
 python tune_hyperparameters.py path/to/config
 ```
