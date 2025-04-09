@@ -38,7 +38,7 @@ def tuning_objective(config: ExperimentConfig, logger: Logger, trial) -> float:
     """
     if isinstance(config.optimizer_config, GradientOptimizerConfig):
         config.optimizer_config.learning_rate = trial.suggest_float(
-            "learning_rate", 0, 20
+            "learning_rate", 0, 30
         )
     elif isinstance(config.optimizer_config, CMAOptimizerConfig):
         config.optimizer_config.population_size = trial.suggest_int(
