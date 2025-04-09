@@ -90,6 +90,5 @@ if __name__ == "__main__":
     print(experiment_stats.describe())
 
     experiment_stats.to_csv(
-        config.model_save_path
-        / f"{config.dataset_name.value}.{config.optimizer_config.name.value}.csv"
+        f"{config.dataset_name.value}.{config.optimizer_config.name.value}.csv"
     )
