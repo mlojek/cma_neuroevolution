@@ -13,7 +13,7 @@
     },
     "early_stopping": {
         "patience": 3,
-        "delta": 0.01
+        "delta": 0.001
     },
     "optimizer_config": {
         "name": "sgd",

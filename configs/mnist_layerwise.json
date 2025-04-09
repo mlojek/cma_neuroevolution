@@ -8,7 +8,7 @@
     "random_seed": 42,
     "mlp_layers" : {
         "input_dim": 196,
-        "hidden_dim": 16,
+        "hidden_dim": 10,
         "output_dim": 10
     },
     "early_stopping": {
