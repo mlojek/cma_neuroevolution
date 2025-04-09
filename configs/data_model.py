@@ -68,7 +68,7 @@ class CMAOptimizerConfig(BaseModel):
     population_size: int
     "Population size of the CMA-ES algorithm."
 
-    sigma0: int
+    sigma0: float
     "Starting value for sigma parameter."
 
 

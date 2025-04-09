@@ -38,13 +38,13 @@ def tuning_objective(config: ExperimentConfig, logger: Logger, trial) -> float:
     """
     if isinstance(config.optimizer_config, GradientOptimizerConfig):
         config.optimizer_config.learning_rate = trial.suggest_float(
-            "learning_rate", 0, 10
+            "learning_rate", 0, 20
         )
     elif isinstance(config.optimizer_config, CMAOptimizerConfig):
         config.optimizer_config.population_size = trial.suggest_int(
-            "population_size", 2, 30
+            "population_size", 2, 50
         )
-        config.optimizer_config.sigma0 = trial.suggest_float("sigma", 0, 10)
+        config.optimizer_config.sigma0 = trial.suggest_float("sigma", 0, 20)
 
     train_dataset, val_dataset, test_datset = load_dataset(config)
     training_function = select_training(config)
@@ -59,6 +59,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "config", type=Path, help="Path to experiment config JSON file."
+    )
+    parser.add_argument(
+        "--trials", type=int, default=100, help="Number of trials to perform."
     )
     args = parser.parse_args()
 
@@ -75,7 +78,7 @@ if __name__ == "__main__":
     # Perform tuning
     study = optuna.create_study(direction="minimize")
     objective = partial(tuning_objective, config, logger)
-    study.optimize(objective, n_trials=100)
+    study.optimize(objective, n_trials=args.trials)
     best_trial = study.best_trial
 
     logger.info(f"Optuna found best values: {best_trial.params}.")
