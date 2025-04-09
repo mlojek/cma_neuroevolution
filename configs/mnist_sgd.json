@@ -17,6 +17,6 @@
     },
     "optimizer_config": {
         "name": "sgd",
-        "learning_rate": 17.6396
+        "learning_rate": 21.21
     }
 }

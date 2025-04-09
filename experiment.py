@@ -33,7 +33,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("config", type=Path, help="Path to JSON config file.")
     parser.add_argument(
-        "--runs", type=int, default=25, help="Number of model trainings to perform."
+        "--runs", type=int, default=1, help="Number of model trainings to perform."
     )
     args = parser.parse_args()
 

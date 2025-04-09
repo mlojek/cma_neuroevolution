@@ -17,6 +17,6 @@
     },
     "optimizer_config": {
         "name": "adam",
-        "learning_rate": 0.0299
+        "learning_rate": 0.0332
     }
 }

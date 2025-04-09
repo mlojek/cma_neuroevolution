@@ -17,7 +17,7 @@
     },
     "optimizer_config": {
         "name": "layerwise_cmaes",
-        "population_size": 10,
-        "sigma0": 0.5975
+        "population_size": 50,
+        "sigma0": 7.472
     }
 }

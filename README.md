@@ -39,19 +39,19 @@ python tune_hyperparameters.py path/to/config
 ### Iris dataset
 | Training mode                                     | Model evals | Gradient evals | Train time (s) | Test loss | Test accuracy |
 |---------------------------------------------------|-------------|----------------|----------------|-----------|---------------|
-| [SGD](configs/iris_sgd.json)                      | 1830±0      | 84±0           | 0.209±0.031    | 0.5996±0  | 0.966±0       |
-| [ADAM](configs/iris_adam.json)                    | 1470±0      | 66±0           | 0.202±0.031    | 0.6018±0  | 0.933±0       |
-| [CMA-ES](configs/iris_cmaes.json)                 | 14070       | n/a            | 14.6 1.76      | 0.572     | 0.966         |
-| [LAYERWISE CMA-ES](configs/iris_layerwise.json)   | 21270       | n/a            | 0.409          | 0.579     | 0.966         |    
+| [SGD](configs/iris_sgd.json)                      | 1823        | 84             | 0.1959         | 0.5931    | 0.9666        |
+| [ADAM](configs/iris_adam.json)                    | 1230        | 54             | 0.1825         | 0.5915    | 0.9666        |
+| [CMA-ES](configs/iris_cmaes.json)                 | 20520       | n/a            | 9.8605         | 0.5514    | 1.0           |
+| [LAYERWISE CMA-ES](configs/iris_layerwise.json)   | 63990       | n/a            | 0.6379         | 0.5514    | 1.0           |    
 
 
 ### MNIST dataset
 | Training mode                                    | Model evals | Gradient evals | Train time (s) | Test loss | Test accuracy |
 |--------------------------------------------------|-------------|----------------|----------------|-----------|---------------|
-| [SGD](configs/mnist_sgd.json)                    | | | | | |
-| [ADAM](configs/mnist_adam.json)                  | | | | | |
-| [CMA-ES](configs/mnist_cmaes.json)               | | | | | |
-| [LAYERWISE CMA-ES](configs/mnist_layerwise.json) | | | | | |    
+| [SGD](configs/mnist_sgd.json)                    | 2.89e6      | 1062           | 18.89          | 1.5420    | 0.9251        |
+| [ADAM](configs/mnist_adam.json)                  | 2.99e6      | 1098           | 21.91          | 1.5365    | 0.9275        |
+| [CMA-ES](configs/mnist_cmaes.json)               |             |                |                |           |               |
+| [LAYERWISE CMA-ES](configs/mnist_layerwise.json) |             |                |                |           |               |    
 
 
 ## References
