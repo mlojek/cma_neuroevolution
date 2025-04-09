@@ -17,7 +17,7 @@
     },
     "optimizer_config": {
         "name": "cmaes",
-        "population_size": 31,
-        "sigma0": 13.48
+        "population_size": 34,
+        "sigma0": 16.698
     }
 }
