@@ -48,10 +48,10 @@ python tune_hyperparameters.py path/to/config
 ### MNIST dataset
 | Training mode                                    | Model evals | Gradient evals | Train time (s) | Test loss | Test accuracy |
 |--------------------------------------------------|-------------|----------------|----------------|-----------|---------------|
-| [SGD](configs/mnist_sgd.json)                    | 2.268e6     | 828            | 11.91          | 1.526     | 0.939         |
-| [ADAM](configs/mnist_adam.json)                  | 1.4e6       | 504            | 6.89           | 1.513     | 0.950         |
-| [CMA-ES](configs/mnist_cmaes.json)               |        |               |       | 0.    | 0.          |
-| [LAYERWISE CMA-ES](configs/mnist_layerwise.json) |        |               |       | 0.    | 0.          |    
+| [SGD](configs/mnist_sgd.json)                    | | | | | |
+| [ADAM](configs/mnist_adam.json)                  | | | | | |
+| [CMA-ES](configs/mnist_cmaes.json)               | | | | | |
+| [LAYERWISE CMA-ES](configs/mnist_layerwise.json) | | | | | |    
 
 
 ## References
