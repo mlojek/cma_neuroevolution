@@ -24,6 +24,8 @@ def train_cmaes_layerwise(
     val_dataset: TensorDataset,
     config: ExperimentConfig,
     logger: Logger = None,
+    *,
+    random_seed: int = 42,
 ) -> MLPClassifier:
     """
     Train the MLP classifier using the CMA-ES optimization method, with a separate CMA-ES
@@ -35,6 +37,7 @@ def train_cmaes_layerwise(
         val_dataset (TensorDataset): Validation split of the dataset.
         config (TrainingConfig): Configuration of training hyperparameters.
         logger (Logger): Logger to log training and validation metrics.
+        random_seed (int): Random seed for CMA-ES.
 
     Returns:
         MLPClassifier: Trained classifier model.
@@ -53,7 +56,7 @@ def train_cmaes_layerwise(
         cma.CMAEvolutionStrategy(
             param_vector,
             config.optimizer_config.sigma0,
-            {"popsize": config.optimizer_config.population_size},
+            {"popsize": config.optimizer_config.population_size, "seed": random_seed},
         )
         for param_vector in model.get_params_layers()
     ]
