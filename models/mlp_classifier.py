@@ -15,7 +15,14 @@ class MLPClassifier(nn.Module):
     Simple multi-layer perceptron classifier model.
     """
 
-    def __init__(self, input_dim=4, hidden_dim=10, output_dim=3):
+    def __init__(
+        self,
+        input_dim: int = 4,
+        hidden_dim: int = 10,
+        output_dim: int = 3,
+        *,
+        random_seed: int = 42
+    ):
         """
         Class constructor.
 
@@ -23,7 +30,10 @@ class MLPClassifier(nn.Module):
             input_dim (int): Number of input neurons.
             hidden_dim (int): Number of hidden layer neurons.
             output_dim (int): Number of outputs.
+            random_seed (int): Random seed for model weights for reproducibility.
         """
+        torch.manual_seed(random_seed)
+
         super().__init__()
         self.linear1 = nn.Linear(input_dim, hidden_dim)
         self.activation = nn.Sigmoid()
