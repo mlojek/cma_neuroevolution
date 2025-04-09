@@ -14,7 +14,7 @@
     "log_interval": 1,
     "optimizer_config": {
         "name": "layerwise_cmaes",
-        "population_size": 10,
-        "sigma0": 1
+        "population_size": 16,
+        "sigma0": 8.67
     }
 }
