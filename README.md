@@ -42,7 +42,11 @@ python tune_hyperparameters.py path/to/config
 | [SGD](configs/iris_sgd.json)                     | 1830        | 84             | 0.1844         | 0.6145    | 0.9333        |
 | [ADAM](configs/iris_adam.json)                   | 1350        | 60             | 0.1804         | 0.6033    | 0.9333        |
 | [CMA-ES](configs/iris_cmaes.json)                | 22410       | n/a            | 10.858         | 0.6607    | 0.9           |
-| [LAYERWISE CMA-ES](configs/iris_layerwise.json)  | 50130       | n/a            | 0.7341         | 0.6542    | 0.9           |    
+| [LAYERWISE CMA-ES](configs/iris_layerwise.json)  | 50130       | n/a            | 0.7341         | 0.6542    | 0.9           |  
+
+TODO train loss and train accuracy
+TODO eliminate reproducibility and run 25 times
+TODO every of the 25 runs each time should have the same weights - seed torch weight initialization with run index?
 
 
 ### MNIST dataset
