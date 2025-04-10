@@ -50,7 +50,7 @@ python tune_hyperparameters.py path/to/config
 |--------------------------------------------------|-------------|----------------|----------------|-----------|---------------|
 | [SGD](configs/mnist_sgd.json)                    | 2.89e6      | 1062           | 18.89          | 1.5420    | 0.9251        |
 | [ADAM](configs/mnist_adam.json)                  | 2.99e6      | 1098           | 21.91          | 1.5365    | 0.9275        |
-| [CMA-ES](configs/mnist_cmaes.json)               |             |                |                |           |               |
+| [CMA-ES](configs/mnist_cmaes.json)               | 8.88e7      | n/a            | 4680           | 1.6741    | 0.7872        |
 | [LAYERWISE CMA-ES](configs/mnist_layerwise.json) | 7.01e7      | n/a            | 813.5          | 1.7581    | 0.7028        |    
 
 
