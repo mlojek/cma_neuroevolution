@@ -12,10 +12,10 @@ import pandas as pd
 from torch import nn
 from torch.utils.data import DataLoader
 
-from configs.data_model import ExperimentConfig
-from data.load_dataset import load_dataset
-from models.mlp_classifier import MLPClassifier
-from training.select_training import select_training
+from .config.data_model import ExperimentConfig
+from .data.load_dataset import load_dataset
+from .models.mlp_classifier import MLPClassifier
+from .training.select_training import select_training
 
 DATAFRAME_COLUMNS = [
     "time",

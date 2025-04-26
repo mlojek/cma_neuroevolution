@@ -8,10 +8,10 @@ import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 
-from configs.data_model import ExperimentConfig, GradientOptimizerName
-from models.mlp_classifier import MLPClassifier
-from utils.early_stopping import EarlyStopping
-from utils.wandb_utils import init_wandb, log_training_metrics
+from ..config.data_model import ExperimentConfig, GradientOptimizerName
+from ..models.mlp_classifier import MLPClassifier
+from ..utils.early_stopping import EarlyStopping
+from ..utils.wandb_utils import init_wandb, log_training_metrics
 
 
 def train_gradient(

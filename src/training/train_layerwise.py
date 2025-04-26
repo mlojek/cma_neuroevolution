@@ -3,8 +3,6 @@ Training of model with CMA-ES optimization by using a separate CMA-ES optimizer
 for each set of learnable parameters.
 """
 
-# pylint: disable=too-many-arguments, too-many-locals
-
 from logging import Logger
 
 import cma
@@ -12,10 +10,10 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
-from configs.data_model import ExperimentConfig
-from models.mlp_classifier import MLPClassifier
-from utils.early_stopping import EarlyStopping
-from utils.wandb_utils import init_wandb, log_training_metrics
+from ..config.data_model import ExperimentConfig
+from ..models.mlp_classifier import MLPClassifier
+from ..utils.early_stopping import EarlyStopping
+from ..utils.wandb_utils import init_wandb, log_training_metrics
 
 
 def train_cmaes_layerwise(

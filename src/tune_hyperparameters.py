@@ -13,14 +13,14 @@ import optuna
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 
-from configs.data_model import (
+from .config.data_model import (
     CMAOptimizerConfig,
     ExperimentConfig,
     GradientOptimizerConfig,
 )
-from data.load_dataset import load_dataset
-from models.mlp_classifier import MLPClassifier
-from training.select_training import select_training
+from .data.load_dataset import load_dataset
+from .models.mlp_classifier import MLPClassifier
+from .training.select_training import select_training
 
 
 def tuning_objective(config: ExperimentConfig, logger: Logger, trial) -> float:

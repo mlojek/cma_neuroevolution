@@ -6,9 +6,9 @@ from typing import Tuple
 
 from torch.utils.data import TensorDataset
 
-from configs.data_model import DatasetName, ExperimentConfig
-from data.iris_dataset import load_iris_dataset
-from data.mnist_dataset import load_mnist_dataset
+from ..config.data_model import DatasetName, ExperimentConfig
+from .iris_dataset import load_iris_dataset
+from .mnist_dataset import load_mnist_dataset
 
 
 def load_dataset(
