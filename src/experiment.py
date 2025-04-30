@@ -31,9 +31,16 @@ DATAFRAME_COLUMNS = [
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("config", type=Path, help="Path to JSON config file.")
     parser.add_argument(
-        "--runs", type=int, default=1, help="Number of model trainings to perform."
+        "config",
+        type=Path,
+        help="Path to JSON config file.",
+    )
+    parser.add_argument(
+        "--runs",
+        type=int,
+        default=25,
+        help="Number of model trainings to perform.",
     )
     args = parser.parse_args()
 
@@ -62,13 +69,20 @@ if __name__ == "__main__":
 
         # Create an instance of classfier to train
         model = MLPClassifier(
-            **config.mlp_layers.model_dump(), random_seed=config.random_seed
+            **config.mlp_layers.model_dump(),
+            random_seed=run_num,
         )
 
         row = []
 
         start_time = time.time()
-        model = train_function(model, train_dataset, val_dataset, config, logger)
+        model = train_function(
+            model,
+            train_dataset,
+            val_dataset,
+            config,
+            logger,
+        )
         row = [time.time() - start_time]
 
         loss_fn = nn.CrossEntropyLoss()
