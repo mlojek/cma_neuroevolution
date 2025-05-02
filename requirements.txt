@@ -8,6 +8,7 @@ cma
 pandas
 torch
 torchvision
+optilab
 optuna
 scikit-learn
 
@@ -16,3 +17,4 @@ wandb
 
 # other
 pydantic
+tabulate
