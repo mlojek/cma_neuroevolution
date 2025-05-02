@@ -69,7 +69,23 @@ if __name__ == "__main__":
         results
     ), "Not all result files share the same column names!"
 
-    # TODO create table with mean values
+    column_order = results[0].columns
+
+    # mean values
+    mean_values_df = pd.DataFrame(
+        columns=["optimizer", *column_order],
+        data=[
+            [
+                optimizer_name,
+                *[result_df[column_name].mean() for column_name in column_order],
+            ]
+            for result_df, optimizer_name in zip(results, result_names)
+        ],
+    )
+
+    print("# Mean values")
+    print(tabulate(mean_values_df, headers=mean_values_df.columns, tablefmt="github"))
+
     # TODO for each column
     # TODO perform stat tests for this column with optilab
     # TODO remember to use the right direction of the test (transpose?)
