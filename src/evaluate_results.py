@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 from typing import List
 
+import numpy as np
 import pandas as pd
 from optilab.utils.stat_test import mann_whitney_u_test_grid
 from tabulate import tabulate
@@ -33,7 +34,7 @@ def validate_same_columns(dataframes: List[pd.DataFrame]) -> bool:
     """
     all_columns = set().union(*[set(df.columns) for df in dataframes])
 
-    return all([set(df.columns) == all_columns for df in dataframes])
+    return all(set(df.columns) == all_columns for df in dataframes)
 
 
 if __name__ == "__main__":
@@ -83,11 +84,40 @@ if __name__ == "__main__":
         ],
     )
 
-    print("# Mean values")
-    print(tabulate(mean_values_df, headers=mean_values_df.columns, tablefmt="github"))
+    print("## Mean values")
+    print(
+        tabulate(mean_values_df, headers=mean_values_df.columns, tablefmt="github"),
+        "\n",
+    )
 
-    # TODO for each column
-    # TODO perform stat tests for this column with optilab
-    # TODO remember to use the right direction of the test (transpose?)
-    # TODO append columns with mean and std
-    # TODO end for
+    for column_name in column_order:
+        print(f"## {column_name}")
+
+        pvalues = np.array(
+            mann_whitney_u_test_grid([df[column_name] for df in results])
+        )
+
+        if "acc" in column_name:
+            pvalues = pvalues.T
+
+        pvalues_str = [
+            [f"{value:.4f}" if value is not None else "-" for value in row]
+            for row in pvalues
+        ]
+
+        this_df = pd.DataFrame(
+            columns=["optimizer", "mean", "std", *result_names],
+            data=[
+                [
+                    optimizer_name,
+                    result_df[column_name].mean(),
+                    result_df[column_name].std(),
+                    *pvalues_str[index],
+                ]
+                for index, (result_df, optimizer_name) in enumerate(
+                    zip(results, result_names)
+                )
+            ],
+        )
+
+        print(tabulate(this_df, headers=this_df.columns, tablefmt="github"), "\n")
