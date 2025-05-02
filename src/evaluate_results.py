@@ -1,0 +1,53 @@
+"""
+Script to perform detailed analysis of results.
+"""
+
+import argparse
+import glob
+import os
+from pathlib import Path
+
+import pandas as pd
+from optilab.utils.stat_test import mann_whitney_u_test_grid
+from tabulate import tabulate
+
+from .config.data_model import CMAOptimizerName, GradientOptimizerName
+
+OPTIMIZERS_ORDER = [
+    GradientOptimizerName.SGD.value,
+    GradientOptimizerName.ADAM.value,
+    CMAOptimizerName.CMAES.value,
+    CMAOptimizerName.LAYERWISE_CMAES.value,
+]
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "input_dir",
+        type=Path,
+        help="Directory to read CSV result files from.",
+    )
+    args = parser.parse_args()
+
+    result_paths = []
+
+    for file in os.listdir(args.input_dir):
+        if file.endswith(".csv"):
+            result_paths.append(file)
+
+    # sort to desired order
+    result_paths = sorted(
+        result_paths,
+        key=lambda x: OPTIMIZERS_ORDER.index(x.split(".")[-2]),
+    )
+
+    results = [pd.read_csv(args.input_dir / file_path) for file_path in result_paths]
+
+    # TODO validate if all csvs have the same columns
+    # TODO create table with mean values
+    # TODO for each column
+    # TODO perform stat tests for this column with optilab
+    # TODO remember to use the right direction of the test (transpose?)
+    # TODO append columns with mean and std
+    # TODO end for
