@@ -86,7 +86,12 @@ if __name__ == "__main__":
 
     print("## Mean values")
     print(
-        tabulate(mean_values_df, headers=mean_values_df.columns, tablefmt="github"),
+        tabulate(
+            mean_values_df,
+            headers=mean_values_df.columns,
+            tablefmt="github",
+            floatfmt=".4g",
+        ),
         "\n",
     )
 
@@ -101,7 +106,7 @@ if __name__ == "__main__":
             pvalues = pvalues.T
 
         pvalues_str = [
-            [f"{value:.4f}" if value is not None else "-" for value in row]
+            [f"{value:.3f}" if value is not None else "-" for value in row]
             for row in pvalues
         ]
 
@@ -120,4 +125,9 @@ if __name__ == "__main__":
             ],
         )
 
-        print(tabulate(this_df, headers=this_df.columns, tablefmt="github"), "\n")
+        print(
+            tabulate(
+                this_df, headers=this_df.columns, tablefmt="github", floatfmt=".4g"
+            ),
+            "\n",
+        )
