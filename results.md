@@ -10,7 +10,12 @@ Performance was assessed based on a comprehensive set of metrics, including loss
 To determine the statistical significance of the observed differences, the non-parametric Mann-Whitney U test was selected. The resulting p-values are reported in the subsequent tables. For measurements of loss, training time, and the number of evaluations, lower values indicate better performance, while for accuracy, higher values are better. A p-value below 0.05 signifies that the performance of the optimizer in the row is statistically significantly better than that of the optimizer in the column.
 
 # Iris dataset
-## Mean values
+- Adam best
+- gradient methods better than cmaes methods in all metrics
+- however cmaes based methods still satisfactory
+- layerwise better in all metrics than cmaes except for model evaluations, most notable difference in optimization time
+
+### Mean values
 |    | optimizer       |     time |   train_loss |   train_acc |   val_loss |   val_acc |   test_loss |   test_acc |   model_evals |   grad_evals |
 |----|-----------------|----------|--------------|-------------|------------|-----------|-------------|------------|---------------|--------------|
 |  0 | sgd             |  0.203   |       0.6343 |      0.9187 |     0.6825 |    0.868  |      0.6729 |     0.8787 |  1753         |        80.16 |
@@ -18,7 +23,7 @@ To determine the statistical significance of the observed differences, the non-p
 |  2 | cmaes           | 10.06    |       0.672  |      0.8782 |     0.6927 |    0.8587 |      0.7125 |     0.8387 |     1.885e+04 |         0    |
 |  3 | layerwise_cmaes |  0.6935  |       0.6318 |      0.9213 |     0.6638 |    0.8867 |      0.6687 |     0.884  |     5.556e+04 |         0    | 
 
-## time
+### time
 |    | optimizer       |     mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|----------|---------|-------|--------|---------|-------------------|
 |  0 | sgd             |  0.203   | 0.5281  | -     | 0.018  | 0.000   | 0.000             |
@@ -26,63 +31,63 @@ To determine the statistical significance of the observed differences, the non-p
 |  2 | cmaes           | 10.06    | 3.107   | 1.000 | 1.000  | -       | 1.000             |
 |  3 | layerwise_cmaes |  0.6935  | 0.2064  | 1.000 | 1.000  | 0.000   | -                 | 
 
-## train_loss
+### train_loss
 |    | optimizer       |   mean |      std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------|----------|-------|--------|---------|-------------------|
 |  0 | sgd             | 0.6343 | 0.1105   | -     | 1.000  | 0.001   | 0.122             |
-|  1 | adam            | 0.5724 | 0.001306 | 0.000 | -      | 0.000   | 0.000             |
+|  1 | **adam**            | 0.5724 | 0.001306 | 0.000 | -      | 0.000   | 0.000             |
 |  2 | cmaes           | 0.672  | 0.06188  | 1.000 | 1.000  | -       | 0.999             |
 |  3 | layerwise_cmaes | 0.6318 | 0.1161   | 0.882 | 1.000  | 0.001   | -                 | 
 
-## train_acc
+### train_acc
 |    | optimizer       |   mean |      std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------|----------|-------|--------|---------|-------------------|
 |  0 | sgd             | 0.9187 | 0.1143   | -     | 1.000  | 0.000   | 0.090             |
-|  1 | adam            | 0.9804 | 0.004843 | 0.001 | -      | 0.000   | 0.000             |
+|  1 | **adam**            | 0.9804 | 0.004843 | 0.001 | -      | 0.000   | 0.000             |
 |  2 | cmaes           | 0.8782 | 0.06224  | 1.000 | 1.000  | -       | 1.000             |
 |  3 | layerwise_cmaes | 0.9213 | 0.1276   | 0.913 | 1.000  | 0.000   | -                 | 
 
-## val_loss
+### val_loss
 |    | optimizer       |   mean |      std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------|----------|-------|--------|---------|-------------------|
 |  0 | sgd             | 0.6825 | 0.08794  | -     | 1.000  | 0.037   | 0.969             |
-|  1 | adam            | 0.6334 | 0.006367 | 0.000 | -      | 0.000   | 0.546             |
+|  1 | **adam**            | 0.6334 | 0.006367 | 0.000 | -      | 0.000   | 0.546             |
 |  2 | cmaes           | 0.6927 | 0.05911  | 0.964 | 1.000  | -       | 0.998             |
-|  3 | layerwise_cmaes | 0.6638 | 0.1092   | 0.033 | 0.461  | 0.002   | -                 | 
+|  3 | **layerwise_cmaes** | 0.6638 | 0.1092   | 0.033 | 0.461  | 0.002   | -                 | 
 
-## val_acc
+### val_acc
 |    | optimizer       |   mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------|---------|-------|--------|---------|-------------------|
 |  0 | sgd             | 0.868  | 0.09254 | -     | 0.999  | 0.056   | 0.948             |
-|  1 | adam            | 0.924  | 0.01528 | 0.001 | -      | 0.000   | 0.171             |
+|  1 | **adam**        | 0.924  | 0.01528 | 0.001 | -      | 0.000   | 0.171             |
 |  2 | cmaes           | 0.8587 | 0.06257 | 0.946 | 1.000  | -       | 0.999             |
 |  3 | layerwise_cmaes | 0.8867 | 0.124   | 0.054 | 0.834  | 0.002   | -                 | 
 
-## test_loss
+### test_loss
 |    | optimizer       |   mean |      std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------|----------|-------|--------|---------|-------------------|
 |  0 | sgd             | 0.6729 | 0.09603  | -     | 1.000  | 0.005   | 0.508             |
-|  1 | adam            | 0.6124 | 0.005971 | 0.000 | -      | 0.000   | 0.000             |
+|  1 | **adam**        | 0.6124 | 0.005971 | 0.000 | -      | 0.000   | 0.000             |
 |  2 | cmaes           | 0.7125 | 0.07849  | 0.995 | 1.000  | -       | 0.996             |
 |  3 | layerwise_cmaes | 0.6687 | 0.1131   | 0.500 | 1.000  | 0.004   | -                 | 
 
-## test_acc
+### test_acc
 |    | optimizer       |   mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------|---------|-------|--------|---------|-------------------|
 |  0 | sgd             | 0.8787 | 0.09994 | -     | 0.999  | 0.006   | 0.625             |
-|  1 | adam            | 0.9413 | 0.01453 | 0.001 | -      | 0.000   | 0.002             |
+|  1 | **adam**        | 0.9413 | 0.01453 | 0.001 | -      | 0.000   | 0.002             |
 |  2 | cmaes           | 0.8387 | 0.07916 | 0.994 | 1.000  | -       | 0.999             |
 |  3 | layerwise_cmaes | 0.884  | 0.1266  | 0.383 | 0.998  | 0.001   | -                 | 
 
-## model_evals
+### model_evals
 |    | optimizer       |         mean |          std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------------|--------------|-------|--------|---------|-------------------|
-|  0 | sgd             | 1753         |  621.5       | -     | 0.289  | 0.000   | 0.000             |
-|  1 | adam            | 1835         |  413.5       | 0.717 | -      | 0.000   | 0.000             |
+|  0 | **sgd**         | 1753         |  621.5       | -     | 0.289  | 0.000   | 0.000             |
+|  1 | **adam**        | 1835         |  413.5       | 0.717 | -      | 0.000   | 0.000             |
 |  2 | cmaes           |    1.885e+04 | 4971         | 1.000 | 1.000  | -       | 0.000             |
 |  3 | layerwise_cmaes |    5.556e+04 |    1.224e+04 | 1.000 | 1.000  | 1.000   | -                 | 
 
-## grad_evals
+### grad_evals
 |    | optimizer       |   mean |   std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------|-------|-------|--------|---------|-------------------|
 |  0 | sgd             |  80.16 | 31.07 | -     | 0.289  | 1.000   | 1.000             |
@@ -97,7 +102,7 @@ Both Adam and SGD gradient optimization methods performed significantly better t
 
 The only statistically significant difference between whole-model and layerwise CMA-ES has been observed in the number of model evaluations, in which whole-model cmaes performed less than layerwise cmaes.
 
-### Mean values
+###  Mean values
 | optimizer       |     time  |   train_loss |   train_acc |   val_loss |   val_acc |   test_loss |   test_acc |   model_evals | grad_evals |
 |-----------------|-----------|--------------|-------------|------------|-----------|-------------|------------|---------------|------------|
 | sgd             |    23.23  |        1.574 |      0.8969 |      1.582 |    0.8867 |       1.58  |     0.8887 | **3.355e+06** |      617.8 |
@@ -105,7 +110,7 @@ The only statistically significant difference between whole-model and layerwise 
 | cmaes           |  1336     |        1.749 |      0.7116 |      1.754 |    0.707  |       1.752 |     0.709  |     6.334e+07 |        0   |
 | layerwise_cmaes |  1294     |        1.773 |      0.688  |      1.777 |    0.6843 |       1.776 |     0.6851 |     1.056e+08 |        0   | 
 
-### Training time
+###  Training time
 There's a substantial difference in training times using gradient and CMA-ES methods. The latter report values around 60-70 times higher, which is noticeable during the training. Adam optimizer trained the model the quickest, performing significantly better than all other methods. Both CMA-ES methods performed statistically similar.
 | optimizer       |    mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |-----------------|---------|---------|-------|--------|---------|-------------------|
@@ -114,7 +119,7 @@ There's a substantial difference in training times using gradient and CMA-ES met
 | cmaes           | 1336    | 475.9   | 1.000 | 1.000  | -       | 0.539             |
 | layerwise_cmaes | 1294    | 371.3   | 1.000 | 1.000  | 0.469   | -                 | 
 
-### Training loss
+###  Training loss
 Adam optimizer again perfomed substantially better than all other methods. CMA-ES methods performed significantly worse than gradient optimizers. CM
 | optimizer       |   mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |-----------------|--------|---------|-------|--------|---------|-------------------|
@@ -123,7 +128,7 @@ Adam optimizer again perfomed substantially better than all other methods. CMA-E
 | cmaes           |  1.749 | 0.08144 | 1.000 | 1.000  | -       | 0.274             |
 | layerwise_cmaes |  1.773 | 0.08966 | 1.000 | 1.000  | 0.733   | -                 | 
 
-### Training accuracy
+###  Training accuracy
 Adam optimizer again performed the best of all methods.  
 | optimizer       |   mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |-----------------|--------|---------|-------|--------|---------|-------------------|
@@ -132,7 +137,7 @@ Adam optimizer again performed the best of all methods.
 | cmaes           | 0.7116 | 0.08164 | 1.000 | 1.000  | -       | 0.280             |
 | layerwise_cmaes | 0.688  | 0.08965 | 1.000 | 1.000  | 0.726   | -                 | 
 
-### Validation loss
+###  Validation loss
 | optimizer       |   mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |-----------------|--------|---------|-------|--------|---------|-------------------|
 | sgd             |  1.582 | 0.04109 | -     | 0.999  | 0.000   | 0.000             |
@@ -140,7 +145,7 @@ Adam optimizer again performed the best of all methods.
 | cmaes           |  1.754 | 0.0813  | 1.000 | 1.000  | -       | 0.280             |
 | layerwise_cmaes |  1.777 | 0.08803 | 1.000 | 1.000  | 0.726   | -                 | 
 
-### Validation accuracy
+###  Validation accuracy
 | optimizer       |   mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |-----------------|--------|---------|-------|--------|---------|-------------------|
 | sgd             | 0.8867 | 0.04291 | -     | 0.993  | 0.000   | 0.000             |
@@ -148,7 +153,7 @@ Adam optimizer again performed the best of all methods.
 | cmaes           | 0.707  | 0.0815  | 1.000 | 1.000  | -       | 0.280             |
 | layerwise_cmaes | 0.6843 | 0.08802 | 1.000 | 1.000  | 0.726   | -                 | 
 
-### Test loss
+###  Test loss
 | optimizer       |   mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |-----------------|--------|---------|-------|--------|---------|-------------------|
 | sgd             |  1.58  | 0.04137 | -     | 1.000  | 0.000   | 0.000             |
@@ -156,7 +161,7 @@ Adam optimizer again performed the best of all methods.
 | cmaes           |  1.752 | 0.08075 | 1.000 | 1.000  | -       | 0.280             |
 | layerwise_cmaes |  1.776 | 0.08903 | 1.000 | 1.000  | 0.726   | -                 | 
 
-### Test accuracy
+###  Test accuracy
 | optimizer       |   mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |-----------------|--------|---------|-------|--------|---------|-------------------|
 | sgd             | 0.8887 | 0.0432  | -     | 0.995  | 0.000   | 0.000             |
@@ -164,7 +169,7 @@ Adam optimizer again performed the best of all methods.
 | cmaes           | 0.709  | 0.08089 | 1.000 | 1.000  | -       | 0.287             |
 | layerwise_cmaes | 0.6851 | 0.08902 | 1.000 | 1.000  | 0.720   | -                 | 
 
-### Model evaluations
+###  Model evaluations
 | optimizer       |      mean |       std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |-----------------|-----------|-----------|-------|--------|---------|-------------------|
 | **sgd**         | 3.355e+06 | 7.788e+05 | -     | 0.600  | 0.000   | 0.000             |
@@ -172,7 +177,7 @@ Adam optimizer again performed the best of all methods.
 | cmaes           | 6.334e+07 | 2.179e+07 | 1.000 | 1.000  | -       | 0.000             |
 | layerwise_cmaes | 1.056e+08 | 3.008e+07 | 1.000 | 1.000  | 1.000   | -                 | 
 
-### Gradient evaluations
+###  Gradient evaluations
 | optimizer       |   mean |   std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |-----------------|--------|-------|-------|--------|---------|-------------------|
 | sgd             |  617.8 | 146   | -     | 0.600  | 1.000   | 1.000             |
