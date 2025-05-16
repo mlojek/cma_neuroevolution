@@ -1,17 +1,20 @@
 # CMA-ES Neuroevolution - Experiment results
-To evaluate the performance of CMA-ES neuroevolution, I conducted a comparative study against gradient optimization methods. Each optimizer was executed 25 independent times to obtain robust performance metrics. To ensure fair comparisons, a consistent random seed (42) was utilized for dataset splitting and CMA-ES initialization across all experiments. Model layer initialization was performed with a different random seed for each of the 25 runs (ranging from 0 to 24), applied for all optimizers within a given run.
+To evaluate the performance of CMA-ES neuroevolution, I conducted a comparative study against gradient optimization methods. Each optimizer was executed 25 independent times to obtain various performance metrics. To ensure fair comparisons, a constant random seed (42) was used for dataset splitting and CMA-ES initialization across all experiments. Model layer initialization was performed with a different random seed for each of the 25 runs (ranging from 0 to 24), applied for all optimizers within a given run. This setup was selected to evaluate the optimizers for various "starting points" for the optimized model, while also ensuring fair comparison between the various methods.
 
 To ensure that each optimizer works to the best of it's ability, hyperparameter optimization was performed using the `src/tune_hyperparameters.py` script. Specifically, the learning rate was optimized for gradient-based methods, and both the population size and initial sigma were optimized for CMA-ES variants.
 
-To prevent overfitting and optimize training efficiency, an early stopping mechanism was implemented. Model training was monitored based on the validation loss. If the validation loss did not improve by a predefined margin selected for each dataset, for three consecutive epochs, the training process was ended to avoid overfitting.
+To prevent overfitting and optimize training efficiency, an early stopping mechanism was implemented. During training, if the validation loss did not improve by a set margin selected for each dataset, for three consecutive epochs, the training process was ended to avoid overfitting.
 
 Performance was assessed based on a comprehensive set of metrics, including loss and accuracy on the training, validation, and testing datasets. Additionally, the training time in seconds and the total number of model and gradient evaluations required for convergence were measured.
 
 To determine the statistical significance of the observed differences, the non-parametric Mann-Whitney U test was selected. The resulting p-values are reported in the subsequent tables. For measurements of loss, training time, and the number of evaluations, lower values indicate better performance, while for accuracy, higher values are better. A p-value below 0.05 signifies that the performance of the optimizer in the row is statistically significantly better than that of the optimizer in the column.
 
 # Iris dataset
-- add problem description
+Iris dataset is a classification dataset with 150 samples of 4 continous parameters of the dimensions of iris petals. The samples below to 3 classes signifying a different iris species. This dataset is small and low-dimensional, and should be and easy task for the neural network.
+
 ### Mean values
+The table below lists the mean values of metrics for each optimizer. The **bold** values signify the best performance based on the statistical tests.
+
 |    | optimizer       |     time |   train_loss |   train_acc |   val_loss |   val_acc |   test_loss |   test_acc |   model_evals |   grad_evals |
 |----|-----------------|----------|--------------|-------------|------------|-----------|-------------|------------|---------------|--------------|
 |  0 | sgd             |**0.203** |       0.6343 |      0.9187 |     0.6825 |    0.868  |      0.6729 |     0.8787 |  **1753**     |        80.16 |
@@ -20,6 +23,8 @@ To determine the statistical significance of the observed differences, the non-p
 |  3 | layerwise_cmaes |  0.6935  |       0.6318 |      0.9213 |     0.6638 |    0.8867 |      0.6687 |     0.884  |     5.556e+04 |         0    | 
 
 ### Training time
+The fastest optimizer was SGD. The mean value in the table is artificially high because of few outliers (as evident by a very high standard deviation), but statistical tests prove that it's best of all tested optimizers. This might be caused by the simplicity of the algorithm. The slowest optimizer was CMA-ES, which performed 14 times worse than layerwise CMA-ES. This might be due to the complexity of the algorithm, which is known to be O(n^3) where n is the dimensionality of the problem. Using separate optimizers for the two layers greatly reduces the time complexity. Both CMA-ES based optimizers perform significantly worse than gradient optimizers.
+
 |    | optimizer       |     mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|----------|---------|-------|--------|---------|-------------------|
 |  0 | **sgd**         |  0.203   | 0.5281  | -     | 0.018  | 0.000   | 0.000             |
@@ -27,7 +32,9 @@ To determine the statistical significance of the observed differences, the non-p
 |  2 | cmaes           | 10.06    | 3.107   | 1.000 | 1.000  | -       | 1.000             |
 |  3 | layerwise_cmaes |  0.6935  | 0.2064  | 1.000 | 1.000  | 0.000   | -                 | 
 
-### Training loss
+### Training loss and accuracy
+The lowest training loss was observed for Adam optimizer, which means it was the best at finding a global minimum of the optimized model. Layerwise CMA-ES performed on par with SGD, and better than whole-model CMA-ES. The results are suprising, as the expected results were that CMA-ES would be better at finding the global minimum of the optimized model. It's also suprising that the layerwise CMA-ES performs better than regular CMA-ES. It's hard to conclude what is the cause of such behaviour, and further research is needed to explore this phenomenon.
+
 |    | optimizer       |   mean |      std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------|----------|-------|--------|---------|-------------------|
 |  0 | sgd             | 0.6343 | 0.1105   | -     | 1.000  | 0.001   | 0.122             |
@@ -35,7 +42,8 @@ To determine the statistical significance of the observed differences, the non-p
 |  2 | cmaes           | 0.672  | 0.06188  | 1.000 | 1.000  | -       | 0.999             |
 |  3 | layerwise_cmaes | 0.6318 | 0.1161   | 0.882 | 1.000  | 0.001   | -                 | 
 
-### Training accuracy
+Similarly, training accuracy was also the best for Adam optimizer, followed by a tie between SGD and layerwise CMA-ES. The worst results were noted for CMA-ES, which was the only optimizer that didn't reach 90% mark.
+
 |    | optimizer       |   mean |      std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------|----------|-------|--------|---------|-------------------|
 |  0 | sgd             | 0.9187 | 0.1143   | -     | 1.000  | 0.000   | 0.090             |
@@ -43,7 +51,9 @@ To determine the statistical significance of the observed differences, the non-p
 |  2 | cmaes           | 0.8782 | 0.06224  | 1.000 | 1.000  | -       | 1.000             |
 |  3 | layerwise_cmaes | 0.9213 | 0.1276   | 0.913 | 1.000  | 0.000   | -                 | 
 
-### Validation loss
+### Validation loss amd accuracy
+The lowest validation loss values were observed for both Adam and layerwise CMA-ES. The highest loss value was observed for whole-model CMA-ES.
+
 |    | optimizer           |   mean |      std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|---------------------|--------|----------|-------|--------|---------|-------------------|
 |  0 | sgd                 | 0.6825 | 0.08794  | -     | 1.000  | 0.037   | 0.969             |
@@ -51,15 +61,16 @@ To determine the statistical significance of the observed differences, the non-p
 |  2 | cmaes               | 0.6927 | 0.05911  | 0.964 | 1.000  | -       | 0.998             |
 |  3 | **layerwise_cmaes** | 0.6638 | 0.1092   | 0.033 | 0.461  | 0.002   | -                 | 
 
-### Validation accuracy
+Similarly to the validation loss, the best results were observed for Adam and laywerwise CMA-ES
+
 |    | optimizer       |   mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------|---------|-------|--------|---------|-------------------|
 |  0 | sgd             | 0.868  | 0.09254 | -     | 0.999  | 0.056   | 0.948             |
 |  1 | **adam**        | 0.924  | 0.01528 | 0.001 | -      | 0.000   | 0.171             |
 |  2 | cmaes           | 0.8587 | 0.06257 | 0.946 | 1.000  | -       | 0.999             |
-|  3 | layerwise_cmaes | 0.8867 | 0.124   | 0.054 | 0.834  | 0.002   | -                 | 
+|  3 | **layerwise_cmaes** | 0.8867 | 0.124   | 0.054 | 0.834  | 0.002   | -                 | 
 
-### Test loss
+### Test loss and accuracy
 |    | optimizer       |   mean |      std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------|----------|-------|--------|---------|-------------------|
 |  0 | sgd             | 0.6729 | 0.09603  | -     | 1.000  | 0.005   | 0.508             |
@@ -67,7 +78,8 @@ To determine the statistical significance of the observed differences, the non-p
 |  2 | cmaes           | 0.7125 | 0.07849  | 0.995 | 1.000  | -       | 0.996             |
 |  3 | layerwise_cmaes | 0.6687 | 0.1131   | 0.500 | 1.000  | 0.004   | -                 | 
 
-### Test accuracy
+- adam learns the best and still generalizes good
+
 |    | optimizer       |   mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------|---------|-------|--------|---------|-------------------|
 |  0 | sgd             | 0.8787 | 0.09994 | -     | 0.999  | 0.006   | 0.625             |
@@ -75,7 +87,9 @@ To determine the statistical significance of the observed differences, the non-p
 |  2 | cmaes           | 0.8387 | 0.07916 | 0.994 | 1.000  | -       | 0.999             |
 |  3 | layerwise_cmaes | 0.884  | 0.1266  | 0.383 | 0.998  | 0.001   | -                 | 
 
-### Model evaluations
+### Model and gradient evaluations
+TODO should be summed
+
 |    | optimizer       |         mean |          std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |----|-----------------|--------------|--------------|-------|--------|---------|-------------------|
 |  0 | **sgd**         | 1753         |  621.5       | -     | 0.289  | 0.000   | 0.000             |
@@ -92,16 +106,19 @@ To determine the statistical significance of the observed differences, the non-p
 |  3 | layerwise_cmaes |   0    |  0    | 0.000 | 0.000  | 1.000   | -                 | 
 
 ## Conclusions
-- Adam best
-- gradient methods better than cmaes methods in all metrics
-- however cmaes based methods still satisfactory
-- layerwise better in all metrics than cmaes except for model evaluations, most notable difference in optimization time
+- Adam optimizer performs best out of all four optimizers in all metrics except for training time.
+- Gradient optimizers are noticeably better than CMA-ES methods.  
+- CMA-ES methods do not perform better than gradient methods even for small neural networks on small datasets.
+- Layerwise CMA-ES performs better than whole-model CMA-ES, but requires more model evaluations during training.
+- Adam results have the lowest standard deviations. SGD and whole-model CMA-ES have greater standard deviations. The greatest standard deviations were observed for layerwise CMA-ES in all observed metrics.
 
 
 # MNIST dataset
-- add description of problem
+MNIST is a computer vision classification dataset consisting images of 28x28 grayscale handwritten digits from 10 classes. The training split of the dataset, used in this project, consists of 60'000 such images. To reduce the model complexity, the images were downscaled to 14x14 pixels.
 
 ###  Mean values
+The table below lists the mean values of metrics for each optimizer. The **bold** values signify the best performance based on the statistical tests.
+
 | optimizer       |     time  |   train_loss |   train_acc |   val_loss |   val_acc |   test_loss |   test_acc |   model_evals | grad_evals |
 |-----------------|-----------|--------------|-------------|------------|-----------|-------------|------------|---------------|------------|
 | sgd             |    23.23  |        1.574 |      0.8969 |      1.582 |    0.8867 |       1.58  |     0.8887 | **3.355e+06** |      617.8 |
@@ -119,7 +136,8 @@ There's a substantial difference in training times using gradient and CMA-ES met
 | layerwise_cmaes | 1294    | 371.3   | 1.000 | 1.000  | 0.469   | -                 | 
 
 ###  Training loss
-Adam optimizer again perfomed substantially better than all other methods. CMA-ES methods performed significantly worse than gradient optimizers. CM
+Adam optimizer again perfomed substantially better than all other methods. CMA-ES methods performed significantly worse than gradient optimizers.
+
 | optimizer       |   mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |-----------------|--------|---------|-------|--------|---------|-------------------|
 | sgd             |  1.574 | 0.04179 | -     | 1.000  | 0.000   | 0.000             |
@@ -129,6 +147,7 @@ Adam optimizer again perfomed substantially better than all other methods. CMA-E
 
 ###  Training accuracy
 Adam optimizer again performed the best of all methods.  
+
 | optimizer       |   mean |     std | sgd   | adam   | cmaes   | layerwise_cmaes   |
 |-----------------|--------|---------|-------|--------|---------|-------------------|
 | sgd             | 0.8969 | 0.04367 | -     | 1.000  | 0.000   | 0.000             |
