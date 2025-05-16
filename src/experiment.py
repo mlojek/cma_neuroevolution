@@ -26,7 +26,6 @@ DATAFRAME_COLUMNS = [
     "test_loss",
     "test_acc",
     "model_evals",
-    "grad_evals",
 ]
 
 if __name__ == "__main__":
@@ -92,8 +91,7 @@ if __name__ == "__main__":
                 *model.evaluate(DataLoader(train_dataset), loss_fn),
                 *model.evaluate(DataLoader(val_dataset), loss_fn),
                 *model.evaluate(DataLoader(test_dataset), loss_fn),
-                model.eval_counter,
-                model.grad_counter,
+                model.eval_counter + model.grad_counter,
             ]
         )
 
